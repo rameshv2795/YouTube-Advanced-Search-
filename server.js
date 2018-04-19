@@ -1,13 +1,19 @@
+//import { Youtube } from 'googleapis/build/src/apis/youtube/v3';
+
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser');
 const request = require('request');
 const {google} = require('googleapis');
+const YouTube = require('youtube-node');
 let youtube_key = "AIzaSyA-l5_2YCDQ-m0PCm8BoLOGI8vOXWn8ve8";
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs')
+
+var tube = new YouTube();
+tube.setKey(youtube_key);
 
 const youtube = google.youtube({
   version: 'v3',
@@ -60,7 +66,7 @@ app.post('/', function(req, res) {
           console.log("SHOULDNT BE HERE");
           res.render('index', {vid: output, error: null});*/
          
-      youtube.search.list({
+     /* youtube.search.list({
         part: 'snippet',
         q: 'bears'
       }, function (err, data) {
@@ -68,11 +74,27 @@ app.post('/', function(req, res) {
           console.error('Error: ' + err);
         }
         if (data) {
-          console.log(data)
+          //var vid = JSON.parse(data);
+          var vid = data;
+          console.log(data);
         }
-      }); 
-    });           
-  });
+      }); */
+    var search_number = 5;  
+    tube.search("NBA",search_number,function(error, result, body){
+      if(error){
+        console.log("ERROR");
+      }
+      else{
+        var vid = JSON.stringify(result, null, 2);
+        for(var i = 0; i < search_number; i++){
+          console.log(result.items[i].snippet.title);
+        }
+        //console.log(result.items[0].snippet.title);
+        //console.log(result);
+      }
+    });
+  });           
+});
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
