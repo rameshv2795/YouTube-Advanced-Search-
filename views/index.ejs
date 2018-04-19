@@ -68,6 +68,20 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           <% } %>
         
       </div>
+      <div class="container">
+        
+        <form action="/" method="post">
+          <input name="video_keyword" type="text"placeholder="Search" required>
+          <input type="submit"  value="Search">
+        </form>
+        <% if(locals.vid !== null){ %>
+            <p><%= locals.vid %></p>
+          <% } %>
+          <% if(locals.error !== null){ %>
+            <p><%= "NENE IS NOT HERE OKAAY" %></p>
+        <% } %>
+      
+    </div>      
     </div>
 
   </div>
