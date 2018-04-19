@@ -89,11 +89,11 @@ app.post('/', function(req, res) {
       for(var i = 0; i < search_number; i++){
         //console.log(result.items[i].snippet.title);
         string_result = string_result + result.items[i].snippet.title + 
-        "\n\n\n";
+        "\n\n";
       }
       res.render('index', {video: string_result, error: null});
       //console.log(result.items[0].snippet.title);
-      //console.log(result);
+      console.log(string_result);
     }
   });
 });           
