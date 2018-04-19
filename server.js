@@ -34,8 +34,6 @@ app.post('/', function(req, res) {
     //let key = "cffe188ce6339bc2c99d33e270fff166";
     
     //let url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${key}`
-    let url_youtube = `https://www.googleapis.com/youtube/v3/videos?id=7lCDEYXw3mM&key=${youtube_key}
-    &part=snippet,contentDetails,statistics,status`; 
    // let currency_url = ;
     /*
     request(url, function (err, response, body) {
@@ -52,8 +50,8 @@ app.post('/', function(req, res) {
       }
     });
     */
-    request(url_youtube, function (err, response, body) {
-      console.log("AM I HERE?");
+    //request(url_youtube, function (err, response, body) {
+      //console.log("AM I HERE?");
       /*if(err){
         //res.render('index', {weather: null, error: 'Error, please try again'});
       } else {
@@ -79,25 +77,27 @@ app.post('/', function(req, res) {
           console.log(data);
         }
       }); */
-    var search_number = 5;  
-    tube.search("NBA",search_number,function(error, result, body){
-      if(error){
-        console.log("ERROR");
+  let search_term = req.body.video_keyword;
+  var search_number = 5;  
+  tube.search(search_term,search_number,function(error, result, body){
+    if(error){
+      console.log("ERROR");
+    }
+    else{
+      var string_result = "";
+      var vid = JSON.stringify(result, null, 2);
+      for(var i = 0; i < search_number; i++){
+        //console.log(result.items[i].snippet.title);
+        string_result = string_result + result.items[i].snippet.title + 
+        "\n\n\n";
       }
-      else{
-        var string_result = "";
-        var vid = JSON.stringify(result, null, 2);
-        for(var i = 0; i < search_number; i++){
-          console.log(result.items[i].snippet.title);
-          string_result = string_result + result.items[i].snippet.title + "\n";
-        }
-        res.render('index', {video: string_result, error: null});
-        //console.log(result.items[0].snippet.title);
-        //console.log(result);
-      }
-    });
-  });           
-});
+      res.render('index', {video: string_result, error: null});
+      //console.log(result.items[0].snippet.title);
+      //console.log(result);
+    }
+  });
+});           
+
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')

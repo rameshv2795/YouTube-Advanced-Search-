@@ -54,20 +54,7 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
   <div class="w3-row w3-padding-64">
     <div class="w3-twothird w3-container">
       <h1 class="w3-text-teal">Heading</h1>
-      <div class="container">
-        
-          <form action="/" method="post">
-            <input name="city" type="text"placeholder="Enter a City" required>
-            <input type="submit"  value="Find Plan">
-          </form>
-          <% if(locals.weather !== null){ %>
-              <p><%= locals.weather %></p>
-            <% } %>
-            <% if(locals.error !== null){ %>
-              <p><%= locals.error %></p>
-          <% } %>
-        
-      </div>
+
       <div class="container">
         
         <form action="/" method="post">
