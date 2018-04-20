@@ -2,23 +2,26 @@
 
 const express = require('express')
 const app = express()
+const Video = require('./video.js'); //include video.js class
 const bodyParser = require('body-parser');
 const request = require('request');
-const {google} = require('googleapis');
 const YouTube = require('youtube-node');
 let youtube_key = "AIzaSyA-l5_2YCDQ-m0PCm8BoLOGI8vOXWn8ve8";
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
+/*Import video.js file*/
+
+
 
 var tube = new YouTube();
 tube.setKey(youtube_key);
 
-const youtube = google.youtube({
+/*const youtube = google.youtube({
   version: 'v3',
   auth: youtube_key
-});
+});*/
 
 
 
@@ -77,23 +80,29 @@ app.post('/', function(req, res) {
           console.log(data);
         }
       }); */
-  let search_term = req.body.video_keyword;
-  var search_number = 5;  
+  let search_term = req.body.video_keyword; //user input search
+  var search_number = 5; //amount of videos to be pulled  
+  var arr_holder = []; //stores all videos returned from search
   tube.search(search_term,search_number,function(error, result, body){
     if(error){
       console.log("ERROR");
     }
     else{
       var string_result = "";
-      var vid = JSON.stringify(result, null, 2);
-      for(var i = 0; i < search_number; i++){
+
+      for(var i = 0; i < search_number; i++){ 
         //console.log(result.items[i].snippet.title);
-        string_result = string_result + result.items[i].snippet.title + 
-        "\n\n";
+        
+        var video_class = new Video(
+          result.items[i].snippet.title,
+          result.items[i].snippet.thumbnails.medium.url);
+        arr_holder.push(video_class); //array of videos
       }
-      res.render('index', {video: string_result, error: null});
+      console.log(arr_holder[1].pic);
+      res.render('index', {error: null, 
+        video_array: arr_holder});
       //console.log(result.items[0].snippet.title);
-      console.log(string_result);
+      
     }
   });
 });           
