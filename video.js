@@ -1,8 +1,9 @@
 class Video{
     
-    constructor(name,pic){
+    constructor(name,pic,url){
         this.name = name;
         this.pic = pic;
+        this.url = url;
     }
 
 }

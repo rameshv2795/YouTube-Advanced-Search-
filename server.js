@@ -96,10 +96,12 @@ app.post('/', function(req, res) {
 
       for(var i = 0; i < search_number; i++){ 
         //console.log(result.items[i].snippet.title);
-        
+        var video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
+        console.log(video_url);
         var video_class = new Video(
           result.items[i].snippet.title,
-          result.items[i].snippet.thumbnails.medium.url);
+          result.items[i].snippet.thumbnails.medium.url,
+          video_url);
         arr_holder.push(video_class); //array of videos
       }
       //console.log(arr_holder[1].pic);

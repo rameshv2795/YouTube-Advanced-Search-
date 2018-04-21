@@ -20,6 +20,9 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
   bottom: 0;
   height: inherit;
 }
+.space_under{
+  padding-bottom: 50px;
+}
 </style>
 <body>
 
@@ -61,12 +64,12 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
 
       <div class="container" id="mainid">
         
-        <form action="/" method="post">
+        <form class="space_under"action="/" method="post">
           <input name="video_keyword" type="text"placeholder="Search" required>
           <input type="submit"  value="Search">
         </form>
 
-        <table id="maintable" style="width:100%">
+        <table id="maintable" style="width:80%">
           <tbody>
           </tbody>
         </table>   
@@ -85,22 +88,23 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
               <script> 
                 var img_source = <%- JSON.stringify( locals.video_array[i].pic); %>;
                 var vid_name = <%- JSON.stringify(locals.video_array[i].name); %>;
+                var vid_url = <%- JSON.stringify(locals.video_array[i].url); %>;
 
                 if(row_count === -1){ //need new row
                 //$('#maintable tbody').append("<tr><td><img src='"+img_source+"'></td>");
                  //alert(row_count);
-                  append_result = append_result + "<tr><td><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p> </td>";
+                  append_result = append_result + "<tr><td><a href='"+vid_url+"'><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p> </a></td>";
                   row_count = 0;
                } 
                 else if(row_count >= 2){
                // $('#maintable tbody').append("</tr><tr><td><img src='"+img_source+"'></td>");
-                  append_result = append_result + "</tr><tr><td><img align='center' src='"+img_source+"' alt='"+vid_name+"'> <p align='center'>'"+vid_name+"' </p> </td>";
+                  append_result = append_result + "</tr><tr><td><a href='"+vid_url+"'><img align='center' src='"+img_source+"' alt='"+vid_name+"'> <p align='center'>'"+vid_name+"' </p></a> </td>";
                   //alert(row_count);
                   row_count = 0;
                }
                 else{
                 //$('#maintable tbody').append("<td><img src='"+img_source+"'></td>");
-                  append_result = append_result + "<td><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p></td>";
+                  append_result = append_result + "<td><a href='"+vid_url+"'><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p></a></td>";
                   row_count++;                 
                 }
                                       
