@@ -85,7 +85,7 @@ app.post('/', function(req, res) {
         }
       }); */
   let search_term = req.body.video_keyword; //user input search
-  var search_number = 5; //amount of videos to be pulled  
+  var search_number = 12; //amount of videos to be pulled  
   var arr_holder = []; //stores all videos returned from search
   tube.search(search_term,search_number,function(error, result, body){
     if(error){

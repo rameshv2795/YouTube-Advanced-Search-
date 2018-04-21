@@ -66,47 +66,58 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           <input type="submit"  value="Search">
         </form>
 
-        <table style="width:100%">
-            <tr>
-              <th>Firstname</th>
-              <th>Lastname</th> 
-              <th>Age</th>
-            </tr>
-            <tr>
-              <td>Jill</td>
-              <td>Smith</td> 
-              <td>50</td>
-            </tr>
-          </table>   
+        <table id="maintable" style="width:100%">
+          <tbody>
+          </tbody>
+        </table>   
                
-        <img id="im1" src= "+vid_img" >
+        <script>
+          var row_count = -1;
+          var append_result = "";
+        </script>
+
         <% if(locals.video_array !== undefined){ %>
-          <% 
-           // const dom = new locals.JSDOM(`<!DOCTYPE html><p>Hello world</p>`);
-           // alert(dom.window.document.querySelector("p").textContent); // "Hello world"
-            %>
+
             
             <% for(var i = 0; i < locals.video_array.length; i++){ %>
-              <% var vid_img =  locals.video_array[i].pic %>
               
-              <p><%= locals.video_array[i].name %><p>  
+              
               <script> 
                 var img_source = <%- JSON.stringify( locals.video_array[i].pic); %>;
+                var vid_name = <%- JSON.stringify(locals.video_array[i].name); %>;
 
-                $('#mainid').prepend($('<img>',{src: img_source}));
-                
-                
+                if(row_count === -1){ //need new row
+                //$('#maintable tbody').append("<tr><td><img src='"+img_source+"'></td>");
+                 //alert(row_count);
+                  append_result = append_result + "<tr><td><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p> </td>";
+                  row_count = 0;
+               } 
+                else if(row_count >= 2){
+               // $('#maintable tbody').append("</tr><tr><td><img src='"+img_source+"'></td>");
+                  append_result = append_result + "</tr><tr><td><img align='center' src='"+img_source+"' alt='"+vid_name+"'> <p align='center'>'"+vid_name+"' </p> </td>";
+                  //alert(row_count);
+                  row_count = 0;
+               }
+                else{
+                //$('#maintable tbody').append("<td><img src='"+img_source+"'></td>");
+                  append_result = append_result + "<td><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p></td>";
+                  row_count++;                 
+                }
+                                      
                 //$("#im1").attr("src",img_source);  
               </script> 
             <% } %>
+            
+            <script>
+              $('#maintable tbody').append(append_result);
+            </script>  
 
           <% } %>
+
         <% if(locals.error !== null){ %>
             <p><%= locals.error %></p>
         <% } %>
 
-
-      
       </div>      
     </div>
 
