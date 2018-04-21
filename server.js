@@ -1,7 +1,9 @@
 //import { Youtube } from 'googleapis/build/src/apis/youtube/v3';
 
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
+const jsdom = require('jsdom');
+const {JSDOM} = jsdom;
 const Video = require('./video.js'); //include video.js class
 const bodyParser = require('body-parser');
 const request = require('request');
@@ -31,6 +33,8 @@ app.get('/', function (req, res) {
 })
 
 app.post('/', function(req, res) {
+
+  //res.status(200).json({msg:"OK"});
    // res.render('index');
    // console.log(req.body.city);
     //let city = req.body.city;
@@ -98,11 +102,13 @@ app.post('/', function(req, res) {
           result.items[i].snippet.thumbnails.medium.url);
         arr_holder.push(video_class); //array of videos
       }
-      console.log(arr_holder[1].pic);
+      //console.log(arr_holder[1].pic);
+      //so can load page
       res.render('index', {error: null, 
-        video_array: arr_holder});
+        video_array: arr_holder,
+        JSDOM: JSDOM});
       //console.log(result.items[0].snippet.title);
-      
+    
     }
   });
 });           

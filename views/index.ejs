@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 </head>
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
@@ -58,23 +59,50 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
     <div class="w3-rest w3-container" align="center">
       <h1 class="w3-text-teal">YouTube Search</h1>
 
-      <div class="container">
+      <div class="container" id="mainid">
         
         <form action="/" method="post">
           <input name="video_keyword" type="text"placeholder="Search" required>
           <input type="submit"  value="Search">
         </form>
-        <% if(locals.video_array !== null){ %>
 
+        <table style="width:100%">
+            <tr>
+              <th>Firstname</th>
+              <th>Lastname</th> 
+              <th>Age</th>
+            </tr>
+            <tr>
+              <td>Jill</td>
+              <td>Smith</td> 
+              <td>50</td>
+            </tr>
+          </table>   
+               
+        <img id="im1" src= "+vid_img" >
+        <% if(locals.video_array !== undefined){ %>
+          <% 
+           // const dom = new locals.JSDOM(`<!DOCTYPE html><p>Hello world</p>`);
+           // alert(dom.window.document.querySelector("p").textContent); // "Hello world"
+            %>
+            
             <% for(var i = 0; i < locals.video_array.length; i++){ %>
               <% var vid_img =  locals.video_array[i].pic %>
-              <img src= "+vid_img" >
-              <p><%= locals.video_array[i].name %><p>    
+              
+              <p><%= locals.video_array[i].name %><p>  
+              <script> 
+                var img_source = <%- JSON.stringify( locals.video_array[i].pic); %>;
+
+                $('#mainid').prepend($('<img>',{src: img_source}));
+                
+                
+                //$("#im1").attr("src",img_source);  
+              </script> 
             <% } %>
 
           <% } %>
         <% if(locals.error !== null){ %>
-            <p><%= local.error %></p>
+            <p><%= locals.error %></p>
         <% } %>
 
 
@@ -152,6 +180,11 @@ function w3_close() {
     overlayBg.style.display = "none";
 }
 </script>
+
+<script>
+
+</script>  
+
 
 </body>
 </html>
