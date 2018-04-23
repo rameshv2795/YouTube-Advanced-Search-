@@ -16,7 +16,8 @@ app.set('view engine', 'ejs');
 /*Import video.js file*/
 
 
-
+var search_term; //global variable (might need to change)
+var page_num = 1;
 var tube = new YouTube();
 tube.setKey(youtube_key);
 
@@ -84,9 +85,18 @@ app.post('/', function(req, res) {
           console.log(data);
         }
       }); */
-  let search_term = req.body.video_keyword; //user input search
-  var search_number = 12; //amount of videos to be pulled  
+  
+  
+  if(req.body.pageform === undefined){
+    search_term = req.body.video_keyword; //user input search
+    page_num = 1;
+  }
+  else{
+    page_num++;
+  }
+  var search_number = 50; //amount of videos to be pulled  
   var arr_holder = []; //stores all videos returned from search
+  console.log(page_num);
   tube.search(search_term,search_number,function(error, result, body){
     if(error){
       console.log("ERROR");
@@ -97,7 +107,7 @@ app.post('/', function(req, res) {
       for(var i = 0; i < search_number; i++){ 
         //console.log(result.items[i].snippet.title);
         var video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
-        console.log(video_url);
+        
         var video_class = new Video(
           result.items[i].snippet.title,
           result.items[i].snippet.thumbnails.medium.url,
@@ -108,6 +118,7 @@ app.post('/', function(req, res) {
       //so can load page
       res.render('index', {error: null, 
         video_array: arr_holder,
+        page_num: page_num,
         JSDOM: JSDOM});
       //console.log(result.items[0].snippet.title);
     

@@ -79,13 +79,16 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           var append_result = "";
         </script>
 
-        <% if(locals.video_array !== undefined){ %>
-
-            
-            <% for(var i = 0; i < locals.video_array.length; i++){ %>
+        
+            <% var page_loop = 9; %>
+            <% if(locals.page_num !== undefined){ %>
+              <% page_loop = (locals.page_num * 9); %>
+            <% } %>
+            <% for(var i = page_loop - 9; i < page_loop; i++){ %>
               
               
               <script> 
+                /*These client var store server var*/
                 var img_source = <%- JSON.stringify( locals.video_array[i].pic); %>;
                 var vid_name = <%- JSON.stringify(locals.video_array[i].name); %>;
                 var vid_url = <%- JSON.stringify(locals.video_array[i].url); %>;
@@ -113,10 +116,10 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
             <% } %>
             
             <script>
-              $('#maintable tbody').append(append_result);
+              $('#maintable tbody').append(append_result); //create table with videos from generated string 
             </script>  
 
-          <% } %>
+         
 
         <% if(locals.error !== null){ %>
             <p><%= locals.error %></p>
@@ -145,18 +148,12 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
 -->
   <!-- Pagination -->
   <div class="w3-center w3-padding-32">
-    <div class="w3-bar">
-      <a class="w3-button w3-black" href="#">1</a>
-      <a class="w3-button w3-hover-black" href="#">2</a>
-      <a class="w3-button w3-hover-black" href="#">3</a>
-      <a class="w3-button w3-hover-black" href="#">4</a>
-      <a class="w3-button w3-hover-black" href="#">5</a>
-      <a class="w3-button w3-hover-black" href="#">»</a>
+    <div class="w3-bar" id="pageid">
+      <form action="" method = "post" >
+        <input name ="pageform"type="submit" class="w3-button w3-black" value=">>"></a>
+      </form>
     </div>
   </div>
-
-  <!-- Pagination -->
- 
 
   <footer id="myFooter">
     <div class="w3-container w3-theme-l2 w3-padding-32">
