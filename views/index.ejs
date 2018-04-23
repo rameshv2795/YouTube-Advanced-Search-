@@ -45,7 +45,14 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
   <a href="javascript:void(0)" onclick="w3_close()" class="w3-right w3-xlarge w3-padding-large w3-hover-black w3-hide-large" title="Close Menu">
     <i class="fa fa-remove"></i>
   </a>
-  <h4 class="w3-bar-item"><b>Filters place holder</b></h4>
+  <h4 class="w3-bar-item"><b>Filters</b></h4>
+  <form action="/">
+    Date Range<br>
+    <input type="date" name="firstname" value="Mickey"><br>
+    to<br>
+    <input type="date" name="lastname" value="Mouse"><br><br>
+    <input type="submit" value="Submit">
+  </form>
   <a class="w3-bar-item w3-button w3-hover-black" href="#">Filter 1</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="#">Filter 2</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="#">Filter 3</a>
@@ -64,8 +71,8 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
 
       <div class="container" id="mainid">
         
-        <form class="space_under"action="/" method="post">
-          <input name="video_keyword" type="text"placeholder="Search" required>
+        <form class="space_under"action="/" method="post" onsubmit="keep_search()">
+          <input name="video_keyword" id="video_keyword_id" type="text"placeholder="Search" required>
           <input type="submit"  value="Search">
         </form>
 
@@ -77,47 +84,49 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
         <script>
           var row_count = -1;
           var append_result = "";
+          if(window.localStorage.getItem("s") !== undefined){ //keeps search term in field after sent
+            $("#video_keyword_id").val(window.localStorage.getItem("s"));
+          }
         </script>
+          <% if(locals.video_array !== undefined) {%> <!-- Makes sure there is a search term -->                     
+              <% var page_loop = 9; %>
+              <% if(locals.page_num !== undefined){ %>
+                <% page_loop = (locals.page_num * 9); %>
+              <% } %>
+              <% for(var i = page_loop - 9; i < page_loop; i++){ %>
+                            
+                <script> 
+                  /*These client var store server var*/
+                  var img_source = <%- JSON.stringify( locals.video_array[i].pic); %>;
+                  var vid_name = <%- JSON.stringify(locals.video_array[i].name); %>;
+                  var vid_url = <%- JSON.stringify(locals.video_array[i].url); %>;
 
-        
-            <% var page_loop = 9; %>
-            <% if(locals.page_num !== undefined){ %>
-              <% page_loop = (locals.page_num * 9); %>
-            <% } %>
-            <% for(var i = page_loop - 9; i < page_loop; i++){ %>
-              
-              
-              <script> 
-                /*These client var store server var*/
-                var img_source = <%- JSON.stringify( locals.video_array[i].pic); %>;
-                var vid_name = <%- JSON.stringify(locals.video_array[i].name); %>;
-                var vid_url = <%- JSON.stringify(locals.video_array[i].url); %>;
-
-                if(row_count === -1){ //need new row
-                //$('#maintable tbody').append("<tr><td><img src='"+img_source+"'></td>");
-                 //alert(row_count);
-                  append_result = append_result + "<tr><td><a href='"+vid_url+"'><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p> </a></td>";
-                  row_count = 0;
-               } 
-                else if(row_count >= 2){
-               // $('#maintable tbody').append("</tr><tr><td><img src='"+img_source+"'></td>");
-                  append_result = append_result + "</tr><tr><td><a href='"+vid_url+"'><img align='center' src='"+img_source+"' alt='"+vid_name+"'> <p align='center'>'"+vid_name+"' </p></a> </td>";
+                  if(row_count === -1){ //need new row
+                  //$('#maintable tbody').append("<tr><td><img src='"+img_source+"'></td>");
                   //alert(row_count);
-                  row_count = 0;
-               }
-                else{
-                //$('#maintable tbody').append("<td><img src='"+img_source+"'></td>");
-                  append_result = append_result + "<td><a href='"+vid_url+"'><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p></a></td>";
-                  row_count++;                 
+                    append_result = append_result + "<tr><td><a href='"+vid_url+"'><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p> </a></td>";
+                    row_count = 0;
+                } 
+                  else if(row_count >= 2){
+                // $('#maintable tbody').append("</tr><tr><td><img src='"+img_source+"'></td>");
+                    append_result = append_result + "</tr><tr><td><a href='"+vid_url+"'><img align='center' src='"+img_source+"' alt='"+vid_name+"'> <p align='center'>'"+vid_name+"' </p></a> </td>";
+                    //alert(row_count);
+                    row_count = 0;
                 }
-                                      
-                //$("#im1").attr("src",img_source);  
-              </script> 
-            <% } %>
-            
-            <script>
-              $('#maintable tbody').append(append_result); //create table with videos from generated string 
-            </script>  
+                  else{
+                  //$('#maintable tbody').append("<td><img src='"+img_source+"'></td>");
+                    append_result = append_result + "<td><a href='"+vid_url+"'><img align='center' src='"+img_source+"'> <p align='center'>'"+vid_name+"' </p></a></td>";
+                    row_count++;                 
+                  }
+                                        
+                  //$("#im1").attr("src",img_source);  
+                </script> 
+              <% } %>
+              
+              <script>
+                $('#maintable tbody').append(append_result); //create table with videos from generated string 
+              </script>  
+           <%}%>     
 
          
 
@@ -129,29 +138,15 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
     </div>
 
   </div>
-<!--
-  <div class="w3-row">
-    <div class="w3-rest w3-container">
-      <h1 class="w3-text-teal">Heading</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum
-        dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
-  </div>
 
-  <div class="w3-row w3-padding-64">
-    <div class="w3-rest w3-container">
-      <h1 class="w3-text-teal">Heading</h1>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum
-        dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    </div>
-  </div>
--->
   <!-- Pagination -->
   <div class="w3-center w3-padding-32">
     <div class="w3-bar" id="pageid">
-      <form action="" method = "post" >
-        <input name ="pageform"type="submit" class="w3-button w3-black" value=">>"></a>
+      <form action="/" method="post" onsubmit="save_search()" id="formid" >
+        <input type = "hidden" name ="pageform" value=">>">
+        <input type = "hidden" id ="search_hid_id" name ="search_hid" value=".">
       </form>
+      <button type="submit" class="w3-button w3-black" form="formid" value=">>">>></button>
     </div>
   </div>
 
@@ -195,6 +190,16 @@ function w3_close() {
 
 <script>
 
+function keep_search(){
+  window.localStorage.setItem("s",$('#video_keyword_id').val());
+  //alert(window.localStorage.getItem("s"));
+}
+
+function save_search(){
+  //alert("here");
+  $("#search_hid_id").val(window.localStorage.getItem("s"));
+  //alert($("#search_hid_id").val());
+}
 </script>  
 
 

@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 /*Import video.js file*/
 
 
-var search_term; //global variable (might need to change)
+//var search_term; //global variable (might need to change)
 var page_num = 1;
 var tube = new YouTube();
 tube.setKey(youtube_key);
@@ -35,63 +35,15 @@ app.get('/', function (req, res) {
 
 app.post('/', function(req, res) {
 
-  //res.status(200).json({msg:"OK"});
-   // res.render('index');
-   // console.log(req.body.city);
-    //let city = req.body.city;
-    //let key = "cffe188ce6339bc2c99d33e270fff166";
-    
-    //let url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${key}`
-   // let currency_url = ;
-    /*
-    request(url, function (err, response, body) {
-      if(err){
-        res.render('index', {weather: null, error: 'Error, please try again'});
-      } else {
-        let weather = JSON.parse(body)
-        if(weather.main == undefined){
-          //res.render('index', {weather: null, error: 'Error, please try again'});
-        } else {
-          let weatherText = `It's ${weather.main.temp} degrees in ${weather.name}!`;
-          //res.render('index', {weather: weatherText, error: null});
-        }
-      }
-    });
-    */
-    //request(url_youtube, function (err, response, body) {
-      //console.log("AM I HERE?");
-      /*if(err){
-        //res.render('index', {weather: null, error: 'Error, please try again'});
-      } else {
-        let vid = JSON.parse(body)
-        if(vid == "h"){
-          console.log("SHOULDNT BE HERE");
-          //res.render('index', {weather: null, error: 'Error, please try again'});
-        } else {
-          var output = vid.pageInfo.totalResults;
-          console.log("SHOULDNT BE HERE");
-          res.render('index', {vid: output, error: null});*/
-         
-     /* youtube.search.list({
-        part: 'snippet',
-        q: 'bears'
-      }, function (err, data) {
-        if (err) {
-          console.error('Error: ' + err);
-        }
-        if (data) {
-          //var vid = JSON.parse(data);
-          var vid = data;
-          console.log(data);
-        }
-      }); */
-  
-  
+  var search_term = "";
+
   if(req.body.pageform === undefined){
     search_term = req.body.video_keyword; //user input search
     page_num = 1;
   }
   else{
+    search_term = req.body.search_hid; //from inviz form (prevents using global var)
+    console.log(search_term);
     page_num++;
   }
   var search_number = 50; //amount of videos to be pulled  
