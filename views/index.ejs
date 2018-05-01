@@ -46,12 +46,11 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
     <i class="fa fa-remove"></i>
   </a>
   <h4 class="w3-bar-item"><b>Filters</b></h4>
-  <form action="/">
+  <form action="/"class="w3-bar-item w3-button w3-hover-black">
     Date Range<br>
-    <input type="date" name="firstname" value="Mickey"><br>
+    <input type="date" name="ldate" value="Mickey"><br>
     to<br>
-    <input type="date" name="lastname" value="Mouse"><br><br>
-    <input type="submit" value="Submit">
+    <input type="date" name="hdate" value="Mouse"><br><br>
   </form>
   <a class="w3-bar-item w3-button w3-hover-black" href="#">Filter 1</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="#">Filter 2</a>
@@ -71,8 +70,10 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
 
       <div class="container" id="mainid">
         
-        <form class="space_under"action="/" method="post" onsubmit="keep_search()">
+        <form class="space_under" method="post" id ="main_form_id" onsubmit="keep_search()">
           <input name="video_keyword" id="video_keyword_id" type="text"placeholder="Search" required>
+          <input type = "hidden" name ="lowdate" value=">>">
+          <input type = "hidden" name ="highdate" value=">>">
           <input type="submit"  value="Search">
         </form>
 
@@ -145,6 +146,8 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
       <form action="/" method="post" onsubmit="save_search()" id="formid" >
         <input type = "hidden" name ="pageform" value=">>">
         <input type = "hidden" id ="search_hid_id" name ="search_hid" value=".">
+        <input type = "hidden" name ="lowdate_page" value=">>">
+        <input type = "hidden" name ="highdate_page" value=">>">      
       </form>
       <button type="submit" class="w3-button w3-black" form="formid" value=">>">>></button>
     </div>
@@ -193,6 +196,19 @@ function w3_close() {
 function keep_search(){
   window.localStorage.setItem("s",$('#video_keyword_id').val());
   //alert(window.localStorage.getItem("s"));
+/*
+  $.ajax({
+    type: 'POST',
+    url: '/', 
+    data: 1,
+    success: function(result){
+        alert(result);
+    },
+    error: function(jqXHR, textStatus, errorThrown){
+        alert(xhr.status);
+    }
+    
+  });  */
 }
 
 function save_search(){

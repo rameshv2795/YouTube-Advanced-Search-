@@ -29,13 +29,15 @@ tube.setKey(youtube_key);
 
 
 app.get('/', function (req, res) {
-  //res.send('Hello World!') // to client
   res.render("index"); // sent to index.ejs
 })
 
 app.post('/', function(req, res) {
-
   var search_term = "";
+  var low_date;
+  var high_date;
+  var search_number = 50; //amount of videos to be pulled  
+  var page_token, marker = 0;
 
   if(req.body.pageform === undefined){
     search_term = req.body.video_keyword; //user input search
@@ -46,36 +48,44 @@ app.post('/', function(req, res) {
     console.log(search_term);
     page_num++;
   }
-  var search_number = 50; //amount of videos to be pulled  
-  var arr_holder = []; //stores all videos returned from search
-  console.log(page_num);
-  tube.search(search_term,search_number,function(error, result, body){
+    
+  tube.search(search_term,search_number, {pageToken:""},function(error, result, body){
+    var arr_holder = []; //stores all videos returned from search
+    var is_error = 0;
+
     if(error){
+      is_error = 1;
       console.log("ERROR");
     }
     else{
       var string_result = "";
+      is_error = 0;
 
       for(var i = 0; i < search_number; i++){ 
         //console.log(result.items[i].snippet.title);
         var video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
-        
+        console.log(result.items[i].snippet.publishedAt);
         var video_class = new Video(
           result.items[i].snippet.title,
           result.items[i].snippet.thumbnails.medium.url,
           video_url);
         arr_holder.push(video_class); //array of videos
       }
+      page_token = result.nextPageToken;
       //console.log(arr_holder[1].pic);
       //so can load page
+      //console.log(result.items[0].snippet.title);  
+    }
+    if(is_error == 0){
       res.render('index', {error: null, 
         video_array: arr_holder,
         page_num: page_num,
-        JSDOM: JSDOM});
-      //console.log(result.items[0].snippet.title);
-    
-    }
+        JSDOM: JSDOM});  
+    }  
   });
+
+  
+
 });           
 
 
