@@ -10,6 +10,11 @@ const request = require('request');
 const YouTube = require('youtube-node');
 let youtube_key = "AIzaSyA-l5_2YCDQ-m0PCm8BoLOGI8vOXWn8ve8";
 
+if(typeof localStorage === "undefined" || localStorage === null){
+  var LocalStorage = require('node-localstorage').LocalStorage;
+  localStorage = new LocalStorage('./scratch');
+}
+
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
@@ -36,21 +41,25 @@ app.post('/', function(req, res) {
   var search_term = "";
   var low_date;
   var high_date;
-  var search_number = 50; //amount of videos to be pulled  
-  var page_token, marker = 0;
+  var search_number = 9; //amount of videos to be pulled  
+  var page_token, marker = 0, counter = 0;
+  var arr_holder = [];
 
   if(req.body.pageform === undefined){
     search_term = req.body.video_keyword; //user input search
     page_num = 1;
+    localStorage.setItem('page_token', '');
   }
   else{
     search_term = req.body.search_hid; //from inviz form (prevents using global var)
     console.log(search_term);
     page_num++;
-  }
+    //render_after(localStorage.getItem('arr_holder'), res);
+  }  
+
     
-  tube.search(search_term,search_number, {pageToken:""},function(error, result, body){
-    var arr_holder = []; //stores all videos returned from search
+  tube.search(search_term,search_number, {pageToken: localStorage.getItem('page_token')},function(error, result, body){
+    //stores all videos returned from search
     var is_error = 0;
 
     if(error){
@@ -76,15 +85,17 @@ app.post('/', function(req, res) {
       //so can load page
       //console.log(result.items[0].snippet.title);  
     }
-    if(is_error == 0){
-      res.render('index', {error: null, 
-        video_array: arr_holder,
-        page_num: page_num,
-        JSDOM: JSDOM});  
-    }  
+    
+   console.log(page_token);
+    localStorage.setItem('page_token', page_token);
+    //localStorage.setItem('arr_holder', arr_holder);
+    render_after(arr_holder,res);
+    
   });
-
+    
+      
   
+
 
 });           
 
@@ -93,5 +104,10 @@ app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 })
 
-
+function render_after(arr_holder, res){
+  res.render('index', {error: null, 
+    video_array: arr_holder,
+    page_num: page_num,
+    JSDOM: JSDOM});  
+}
 
