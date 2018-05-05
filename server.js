@@ -39,16 +39,26 @@ app.get('/', function (req, res) {
 
 app.post('/', function(req, res) {
   var search_term = "";
-  var low_date;
-  var high_date;
+  var low_year, low_month, low_day, low_date;
+  var high_year, high_month, high_day, high_date;
   var search_number = 9; //amount of videos to be pulled  
   var page_token, marker = 0, counter = 0;
   var arr_holder = [];
 
+  low_date = new Date(req.body.lowdate);
+  high_date = new Date(req.body.highdate);
+  low_year = low_date.getFullYear();
+  low_month = low_date.getMonth() + 1;
+  low_day = low_date.getDate();
+  high_year = high_date.getFullYear();
+  high_month = high_date.getMonth() + 1;
+  high_day = high_date.getDate();  
+
   if(req.body.pageform === undefined){
+    console.log("Date Input: " + low_month);
     search_term = req.body.video_keyword; //user input search
     page_num = 1;
-    localStorage.setItem('page_token', '');
+    localStorage.setItem('page_token', ''); //reset page token if new search
   }
   else{
     search_term = req.body.search_hid; //from inviz form (prevents using global var)
@@ -86,23 +96,18 @@ app.post('/', function(req, res) {
       //console.log(result.items[0].snippet.title);  
     }
     
-   console.log(page_token);
+   
     localStorage.setItem('page_token', page_token);
     //localStorage.setItem('arr_holder', arr_holder);
     render_after(arr_holder,res);
     
   });
-    
-      
-  
-
 
 });           
 
-
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
-})
+});
 
 function render_after(arr_holder, res){
   res.render('index', {error: null, 

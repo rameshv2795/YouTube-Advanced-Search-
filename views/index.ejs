@@ -48,9 +48,9 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
   <h4 class="w3-bar-item"><b>Filters</b></h4>
   <form action="/"class="w3-bar-item w3-button w3-hover-black">
     Date Range<br>
-    <input type="date" name="ldate" value="Mickey"><br>
+    <input type="date" name="ldate" id="ldate_id"><br>
     to<br>
-    <input type="date" name="hdate" value="Mouse"><br><br>
+    <input type="date" name="hdate" id="hdate_id"><br><br>
   </form>
   <a class="w3-bar-item w3-button w3-hover-black" href="#">Filter 1</a>
   <a class="w3-bar-item w3-button w3-hover-black" href="#">Filter 2</a>
@@ -72,8 +72,8 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
         
         <form class="space_under" method="post" id ="main_form_id" onsubmit="keep_search()">
           <input name="video_keyword" id="video_keyword_id" type="text"placeholder="Search" required>
-          <input type = "hidden" name ="lowdate" value=">>">
-          <input type = "hidden" name ="highdate" value=">>">
+          <input type = "hidden" id = "lowdate_id" name ="lowdate" >
+          <input type = "hidden" id = "highdate_id" name ="highdate" >
           <input type="submit"  value="Search">
         </form>
 
@@ -194,21 +194,11 @@ function w3_close() {
 <script>
 
 function keep_search(){
+  
   window.localStorage.setItem("s",$('#video_keyword_id').val());
-  //alert(window.localStorage.getItem("s"));
-/*
-  $.ajax({
-    type: 'POST',
-    url: '/', 
-    data: 1,
-    success: function(result){
-        alert(result);
-    },
-    error: function(jqXHR, textStatus, errorThrown){
-        alert(xhr.status);
-    }
-    
-  });  */
+  $("#lowdate_id").val($("#ldate_id").val());
+  $("#highdate_id").val($("#hdate_id").val());
+  alert($("#lowdate_id").val());
 }
 
 function save_search(){
