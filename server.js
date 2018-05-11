@@ -1,5 +1,3 @@
-//import { Youtube } from 'googleapis/build/src/apis/youtube/v3';
-
 const express = require('express');
 const app = express();
 const jsdom = require('jsdom');
@@ -18,20 +16,11 @@ if(typeof localStorage === "undefined" || localStorage === null){
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
-/*Import video.js file*/
-
 
 //var search_term; //global variable (might need to change)
 var page_num = 1;
 var tube = new YouTube();
 tube.setKey(youtube_key);
-
-/*const youtube = google.youtube({
-  version: 'v3',
-  auth: youtube_key
-});*/
-
-
 
 app.get('/', function (req, res) {
   res.render("index"); // sent to index.ejs
@@ -45,17 +34,18 @@ app.post('/', function(req, res) {
   var page_token, marker = 0, counter = 0;
   var arr_holder = [];
 
-  low_date = new Date(req.body.lowdate);
-  high_date = new Date(req.body.highdate);
-  low_year = low_date.getFullYear();
-  low_month = low_date.getMonth() + 1;
-  low_day = low_date.getDate();
-  high_year = high_date.getFullYear();
-  high_month = high_date.getMonth() + 1;
-  high_day = high_date.getDate();  
+  /*Date filter information*/
+  if(req.body.lowdate !== "" && req.body.lowdate !== undefined){
+    low_date = new Date(req.body.lowdate);
+    low_date = low_date.toISOString();
+  }
+  if(req.body.highdate !== "" && req.body.highdate !== undefined){
+    high_date = new Date(req.body.highdate);    
+    high_date = high_date.toISOString();
+  }
 
   if(req.body.pageform === undefined){
-    console.log("Date Input: " + low_month);
+    console.log("ISO DATE: " + low_date);
     search_term = req.body.video_keyword; //user input search
     page_num = 1;
     localStorage.setItem('page_token', ''); //reset page token if new search
@@ -64,7 +54,6 @@ app.post('/', function(req, res) {
     search_term = req.body.search_hid; //from inviz form (prevents using global var)
     console.log(search_term);
     page_num++;
-    //render_after(localStorage.getItem('arr_holder'), res);
   }  
 
     
@@ -81,7 +70,6 @@ app.post('/', function(req, res) {
       is_error = 0;
 
       for(var i = 0; i < search_number; i++){ 
-        //console.log(result.items[i].snippet.title);
         var video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
         console.log(result.items[i].snippet.publishedAt);
         var video_class = new Video(
@@ -91,9 +79,6 @@ app.post('/', function(req, res) {
         arr_holder.push(video_class); //array of videos
       }
       page_token = result.nextPageToken;
-      //console.log(arr_holder[1].pic);
-      //so can load page
-      //console.log(result.items[0].snippet.title);  
     }
     
    
