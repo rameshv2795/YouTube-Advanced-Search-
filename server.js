@@ -33,12 +33,16 @@ app.post('/', function(req, res) {
   var page_token, marker = 0, counter = 0;
   var arr_holder = [];
 
-  /*When user first opens page*/
-  if(localStorage.getItem('low_date') === null){
+  if(localStorage.getItem('low_date') === null){ //no local storage set yet
     localStorage.setItem('low_date', low_date);
     localStorage.setItem('high_date', high_date);
   }
-
+  if(req.body.lowdate === ""){ //low date filter empty
+    localStorage.setItem('low_date', low_date); //set default 
+  }
+  if(req.body.highdate === ""){ //higher date filter empty
+    localStorage.setItem('high_date', high_date); //set default 
+  }
   /*Date filter information*/
   if(req.body.lowdate !== "" && req.body.lowdate !== undefined){
     low_date = new Date(req.body.lowdate);
