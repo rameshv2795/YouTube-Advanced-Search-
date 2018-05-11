@@ -88,6 +88,12 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           if(window.localStorage.getItem("s") !== undefined){ //keeps search term in field after sent
             $("#video_keyword_id").val(window.localStorage.getItem("s"));
           }
+          if(window.localStorage.getItem("low") !== undefined){
+            $("#ldate_id").val(window.localStorage.getItem("low"));
+          }
+          if(window.localStorage.getItem("high") !== undefined){
+            $("#hdate_id").val(window.localStorage.getItem("high"));
+          }          
         </script>
           <% if(locals.video_array !== undefined) {%> <!-- Makes sure there is a search term -->                     
               <% var page_loop = 9; %>
@@ -193,18 +199,18 @@ function w3_close() {
 
 <script>
 
-function keep_search(){
-  
+function keep_search(){ //on new search submit
   window.localStorage.setItem("s",$('#video_keyword_id').val());
-  $("#lowdate_id").val($("#ldate_id").val());
+  $("#lowdate_id").val($("#ldate_id").val()); //moves date filter input to hidden input field for submission
   $("#highdate_id").val($("#hdate_id").val());
-  alert($("#lowdate_id").val());
+  window.localStorage.setItem("low",$('#lowdate_id').val());
+  window.localStorage.setItem("high",$('#highdate_id').val());
 }
 
-function save_search(){
-  //alert("here");
+function save_search(){ //on next page button push
   $("#search_hid_id").val(window.localStorage.getItem("s"));
-  //alert($("#search_hid_id").val());
+  $("#ldate_id").val(window.localStorage.getItem("low"));
+  $("#hdate_id").val(window.localStorage.getItem("high"));
 }
 </script>  
 
