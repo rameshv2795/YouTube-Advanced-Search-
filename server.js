@@ -17,8 +17,8 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
-//var search_term; //global variable (might need to change)
-var page_num = 1;
+
+var page_num = 1; //global variable (need to change to local storage or cookie)
 var tube = new YouTube();
 tube.setKey(youtube_key);
 
@@ -28,22 +28,28 @@ app.get('/', function (req, res) {
 
 app.post('/', function(req, res) {
   var search_term = "";
-  var low_year, low_month, low_day, low_date;
-  var high_year, high_month, high_day, high_date;
+  var low_date = "2000-05-10T19:00:03.000Z", high_date = "2900-05-10T19:00:03.000Z";
   var search_number = 9; //amount of videos to be pulled  
   var page_token, marker = 0, counter = 0;
   var arr_holder = [];
+
+  /*When user first opens page*/
+  if(localStorage.getItem('low_date') === null){
+    localStorage.setItem('low_date', low_date);
+    localStorage.setItem('high_date', high_date);
+  }
 
   /*Date filter information*/
   if(req.body.lowdate !== "" && req.body.lowdate !== undefined){
     low_date = new Date(req.body.lowdate);
     low_date = low_date.toISOString();
+    localStorage.setItem('low_date', low_date);
   }
   if(req.body.highdate !== "" && req.body.highdate !== undefined){
     high_date = new Date(req.body.highdate);    
     high_date = high_date.toISOString();
+    localStorage.setItem('high_date', high_date);
   }
-
   if(req.body.pageform === undefined){
     console.log("ISO DATE: " + low_date);
     search_term = req.body.video_keyword; //user input search
@@ -56,8 +62,7 @@ app.post('/', function(req, res) {
     page_num++;
   }  
 
-    
-  tube.search(search_term,search_number, {pageToken: localStorage.getItem('page_token')},function(error, result, body){
+  tube.search(search_term, search_number, {publishedBefore: localStorage.getItem('high_date'), publishedAfter: localStorage.getItem('low_date'), pageToken: localStorage.getItem('page_token')}, function(error, result, body){
     //stores all videos returned from search
     var is_error = 0;
 
@@ -80,12 +85,10 @@ app.post('/', function(req, res) {
       }
       page_token = result.nextPageToken;
     }
-    
    
     localStorage.setItem('page_token', page_token);
     //localStorage.setItem('arr_holder', arr_holder);
     render_after(arr_holder,res);
-    
   });
 
 });           
