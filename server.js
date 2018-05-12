@@ -102,11 +102,3 @@ app.post('/', function(req, res) {
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 });
-
-function render_after(arr_holder, res){
-  res.render('index', {error: null, 
-    video_array: arr_holder,
-    page_num: page_num,
-    JSDOM: JSDOM});  
-}
-
