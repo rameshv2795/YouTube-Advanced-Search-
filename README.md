@@ -2,9 +2,8 @@
 Advanced searches that cannot be done on the main YouTube site. Takes advantage of YouTube Data API. Uses Node.js and Express.js. Currently being developed.
 
 # Running
-1. Make sure Node.js is installed (node -v)
-2. Run command "npm install -g"
-2. Start the application with "npm server" or "npm start".
+1. Make sure Node.js v8.11.1 is installed (node -v)
+2. Start the application with "node server.js".
 3. Open “http://localhost:3000” in browser
 
 # Status
