@@ -91,8 +91,10 @@ app.post('/', function(req, res) {
     }
    
     localStorage.setItem('page_token', page_token);
-    //localStorage.setItem('arr_holder', arr_holder);
-    render_after(arr_holder,res);
+    res.render('index', {error: null, 
+      video_array: arr_holder,
+      page_num: page_num,
+      JSDOM: JSDOM}); 
   });
 
 });           
