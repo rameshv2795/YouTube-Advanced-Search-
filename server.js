@@ -22,11 +22,11 @@ var page_num = 1; //global variable (need to change to local storage or cookie)
 var tube = new YouTube();
 tube.setKey(youtube_key);
 
-app.get('/', function (req, res) {
+app.get('/', function (req, res){
   res.render("index"); // sent to index.ejs
 })
 
-app.post('/', function(req, res) {
+app.post('/', function(req, res){
   var search_term = "";
   var low_date = "2000-05-10T19:00:03.000Z", high_date = "2900-05-10T19:00:03.000Z";
   var search_number = 9; //amount of videos to be pulled  
