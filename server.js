@@ -9,7 +9,7 @@ const YouTube = require('youtube-node');
 let youtube_key = "AIzaSyA-l5_2YCDQ-m0PCm8BoLOGI8vOXWn8ve8";
 
 if(typeof localStorage === "undefined" || localStorage === null){
-  var LocalStorage = require('node-localstorage').LocalStorage;
+  let LocalStorage = require('node-localstorage').LocalStorage;
   localStorage = new LocalStorage('./scratch');
 }
 
@@ -17,9 +17,8 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
-
-var page_num = 1; //global variable (need to change to local storage or cookie)
-var tube = new YouTube();
+let page_num = 1; //global variable (need to change to local storage or cookie)
+let tube = new YouTube();
 tube.setKey(youtube_key);
 
 app.get('/', function (req, res){
@@ -27,8 +26,8 @@ app.get('/', function (req, res){
 })
 
 app.post('/', function(req, res){
-  var search_term = "";
-  var page_token, marker = 0, counter = 0;
+  let search_term = "";
+  let page_token, marker = 0, counter = 0; //Global vars in this scope. Might need to change
 
   date_filter(req).then(function(){
     return search_term_filter(req);
@@ -45,7 +44,7 @@ app.listen(3000, function () {
 /*Promises for setting api date parameter*/
 let date_filter = function(req){
   return new Promise(function(resolve,reject){
-    var low_date = "2000-05-10T19:00:03.000Z", high_date = "2900-05-10T19:00:03.000Z";
+    let low_date = "2000-05-10T19:00:03.000Z", high_date = "2900-05-10T19:00:03.000Z";
 
     if(localStorage.getItem('low_date') === null){ //no local storage set yet
       localStorage.setItem('low_date', low_date);
@@ -93,24 +92,30 @@ let search_term_filter = function(req){
 
 let send_request = function(req,res){
   return new Promise(function(resolve,reject){
-    var search_number = 9; //amount of videos to be pulled  
+    let search_number = 9; //amount of videos to be pulled  
+    let parameters = { 
+      publishedBefore: localStorage.getItem('high_date'), 
+      publishedAfter: localStorage.getItem('low_date'), 
+      pageToken: localStorage.getItem('page_token'),
+      relevanceLanguage: "zh-Hans"
+    };
 
-    tube.search(search_term, search_number, {publishedBefore: localStorage.getItem('high_date'), publishedAfter: localStorage.getItem('low_date'), pageToken: localStorage.getItem('page_token')}, function(error, result, body){
-      var is_error = 0;
-      var arr_holder = [];
+    tube.search(search_term, search_number, parameters, function(error, result, body){
+      let is_error = 0;
+      let arr_holder = [];
       
       if(error){
         is_error = 1;
         console.log("ERROR");
       }
       else{
-        var string_result = "";
+        let string_result = "";
         is_error = 0;
   
-        for(var i = 0; i < search_number; i++){ 
-          var video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
+        for(let i = 0; i < search_number; i++){ 
+          let video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
           console.log(result.items[i].snippet.publishedAt);
-          var video_class = new Video(
+          let video_class = new Video(
             result.items[i].snippet.title,
             result.items[i].snippet.thumbnails.medium.url,
             video_url);

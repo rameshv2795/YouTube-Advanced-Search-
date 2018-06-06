@@ -113,33 +113,26 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
                   var vid_url = <%- JSON.stringify(locals.video_array[i].url); %>;
 
                   if(row_count === -1){ //need new row
-                  //$('#maintable tbody').append("<tr><td><img src='"+img_source+"'></td>");
-                  //alert(row_count);
                     append_result = append_result + "<tr><td align='center'><a href='"+vid_url+"'><img src='"+img_source+"'> <p >'"+vid_name+"' </p> </a></td>";
                     row_count = 0;
                 } 
                   else if(row_count >= 2){
-                // $('#maintable tbody').append("</tr><tr><td><img src='"+img_source+"'></td>");
                     append_result = append_result + "</tr><tr><td align='center'><a href='"+vid_url+"'><img  src='"+img_source+"' alt='"+vid_name+"'> <p>'"+vid_name+"' </p></a> </td>";
-                    //alert(row_count);
                     row_count = 0;
                 }
                   else{
-                  //$('#maintable tbody').append("<td><img src='"+img_source+"'></td>");
                     append_result = append_result + "<td align='center'><a href='"+vid_url+"'><img  src='"+img_source+"'> <p >'"+vid_name+"' </p></a></td>";
                     row_count++;                 
-                  }
-                                        
-                  //$("#im1").attr("src",img_source);  
+                  }         
                 </script> 
+
               <% } %>
-              
+
               <script>
                 $('#maintable tbody').append(append_result); //create table with videos from generated string 
-              </script>  
-           <%}%>     
+              </script> 
 
-         
+           <%}%>     
 
         <% if(locals.error !== null){ %>
             <p><%= locals.error %></p>
@@ -147,7 +140,6 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
 
       </div>      
     </div>
-
   </div>
 
   <!-- Pagination -->
@@ -178,10 +170,10 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
 
 <script>
 // Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
+let mySidebar = document.getElementById("mySidebar");
 
 // Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
+let overlayBg = document.getElementById("myOverlay");
 
 // Toggle between showing and hiding the sidebar, and add overlay effect
 function w3_open() {
