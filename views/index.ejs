@@ -46,17 +46,21 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
     <i class="fa fa-remove"></i>
   </a>
   <h4 class="w3-bar-item"><b>Filters</b></h4>
+
   <form class="w3-bar-item w3-button w3-hover-grey">
     Date Range<br>
     <input type="date" name="ldate" id="ldate_id"><br>
     to<br>
     <input type="date" name="hdate" id="hdate_id"><br><br>
   </form>
+
   <form class="w3-bar-item w3-button w3-hover-grey">
-    <select align="center">
-      <option value="construct">Select Language</option>
-    </select>
-  </form>  
+    Length in Minutes<br>
+    <input type="number" min="0" step="1" name="ltime" id="ltime_id"><br>
+    ><br>
+    <input type="number" min="0" step="1" name="htime" id="htime_id"><br><br>
+  </form> 
+
   <a class="w3-bar-item w3-button w3-hover-grey" href="#">Filter 2</a>
   <a class="w3-bar-item w3-button w3-hover-grey" href="#">Filter 3</a>
   <a class="w3-bar-item w3-button w3-hover-grey" href="#">Filter 4</a>
@@ -78,6 +82,8 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           <input name="video_keyword" id="video_keyword_id" type="text"placeholder="Search" required>
           <input type = "hidden" id = "lowdate_id" name ="lowdate" >
           <input type = "hidden" id = "highdate_id" name ="highdate" >
+          <input type = "hidden" id = "lowtime_id" name ="lowtime" >
+          <input type = "hidden" id = "hightime_id" name ="hightime" >
           <input type="submit"  value="Search">
         </form>
 
@@ -150,6 +156,8 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
         <input type = "hidden" id ="search_hid_id" name ="search_hid" value=".">
         <input type = "hidden" name ="lowdate_page" value=">>">
         <input type = "hidden" name ="highdate_page" value=">>">      
+        <input type = "hidden" name ="lowtime_page" value=">>">
+        <input type = "hidden" name ="hightime_page" value=">>">   
       </form>
       <button type="submit" class="w3-button w3-black" form="formid" value=">>">>></button>
     </div>
@@ -176,11 +184,11 @@ let mySidebar = document.getElementById("mySidebar");
 let overlayBg = document.getElementById("myOverlay");
 
 // Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-    if (mySidebar.style.display === 'block') {
+function w3_open(){
+    if (mySidebar.style.display === 'block'){
         mySidebar.style.display = 'none';
         overlayBg.style.display = "none";
-    } else {
+    } else{
         mySidebar.style.display = 'block';
         overlayBg.style.display = "block";
     }
@@ -194,22 +202,26 @@ function w3_close() {
 </script>
 
 <script>
-
 function keep_search(){ //on new search submit
   window.localStorage.setItem("s",$('#video_keyword_id').val());
   $("#lowdate_id").val($("#ldate_id").val()); //moves date filter input to hidden input field for submission
   $("#highdate_id").val($("#hdate_id").val());
   window.localStorage.setItem("low",$('#lowdate_id').val());
   window.localStorage.setItem("high",$('#highdate_id').val());
+  $("#lowtime_id").val($("#ltime_id").val()); //moves time filter input to hidden input field for submission
+  $("#hightime_id").val($("#htime_id").val());
+  window.localStorage.setItem("lowtime",$('#lowtime_id').val());
+  window.localStorage.setItem("hightime",$('#hightime_id').val());
 }
 
 function save_search(){ //on next page button push
   $("#search_hid_id").val(window.localStorage.getItem("s"));
   $("#ldate_id").val(window.localStorage.getItem("low"));
   $("#hdate_id").val(window.localStorage.getItem("high"));
+  $("#ltime_id").val(window.localStorage.getItem("lowtime"));
+  $("#htime_id").val(window.localStorage.getItem("hightime"));
 }
 </script>  
-
 
 </body>
 </html>

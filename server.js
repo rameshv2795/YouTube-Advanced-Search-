@@ -28,7 +28,8 @@ app.get('/', function (req, res){
 app.post('/', function(req, res){
   let search_term = "";
   let page_token, marker = 0, counter = 0; //Global vars in this scope. Might need to change
-
+  let is_length_filter = 1;
+  console.log(req.body.lowtime);
   date_filter(req).then(function(){
     return search_term_filter(req);
   }).then(function(){
@@ -37,7 +38,7 @@ app.post('/', function(req, res){
 
 });           
 
-app.listen(3000, function () {
+app.listen(3000, function(){
   console.log('Example app listening on port 3000!')
 });
 
@@ -96,8 +97,7 @@ let send_request = function(req,res){
     let parameters = { 
       publishedBefore: localStorage.getItem('high_date'), 
       publishedAfter: localStorage.getItem('low_date'), 
-      pageToken: localStorage.getItem('page_token'),
-      relevanceLanguage: "zh-Hans"
+      pageToken: localStorage.getItem('page_token')
     };
 
     tube.search(search_term, search_number, parameters, function(error, result, body){
@@ -114,11 +114,11 @@ let send_request = function(req,res){
   
         for(let i = 0; i < search_number; i++){ 
           let video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
-          console.log(result.items[i].snippet.publishedAt);
           let video_class = new Video(
             result.items[i].snippet.title,
             result.items[i].snippet.thumbnails.medium.url,
             video_url);
+          console.log(result.items[i]);
           arr_holder.push(video_class); //array of videos
         }
         page_token = result.nextPageToken;
