@@ -29,11 +29,15 @@ app.post('/', function(req, res){
   let search_term = "";
   let page_token, marker = 0, counter = 0; //Global vars in this scope. Might need to change
   let is_length_filter = 1;
+  let arr_holder = [], arr_holder_searched = [];
   console.log(req.body.lowtime);
+
   date_filter(req).then(function(){
     return search_term_filter(req);
   }).then(function(){
-    return send_request(req,res);
+    return send_request(req,res, arr_holder);
+  }).then(function(arr_holder, page_num){
+    return length_filter(arr_holder, page_num);
   }).then(function(arr_holder, page_num){
     return render_page(res, arr_holder, page_num);
   });
@@ -93,7 +97,7 @@ let search_term_filter = function(req){
   });
 };
 
-let send_request = function(req,res){
+let send_request = function(req, res, arr_holder){
   return new Promise(function(resolve,reject){
     let search_number = 9; //amount of videos to be pulled  
     let parameters = { 
@@ -104,7 +108,6 @@ let send_request = function(req,res){
 
     tube.search(search_term, search_number, parameters, function(error, result, body){
       let is_error = 0;
-      let arr_holder = [];
       
       if(error){
         is_error = 1;
@@ -119,19 +122,49 @@ let send_request = function(req,res){
           let video_class = new Video(
             result.items[i].snippet.title,
             result.items[i].snippet.thumbnails.medium.url,
-            video_url);
+            video_url,
+            result.items[i].id.videoId
+          );
           //console.log(result.items[i]);
           arr_holder.push(video_class); //array of videos
         }
-        tube.getById(result.items[1].id.videoId, function(error, result2){
-          console.log(result2.items[0].contentDetails);
-        });
         page_token = result.nextPageToken;
       }
       localStorage.setItem('page_token', page_token);
 
       resolve(arr_holder, page_num);  
     });
+  });
+};
+
+/*Work in progress*/
+let length_filter = function(arr_holder, page_num){
+  return new Promise(function(resolve,reject){
+    let isLength = 1;
+
+    if(isLength == 1){ //modify arr_holder
+      
+      for(let i = 0; i < arr_holder.length; i++){
+
+        tube.getById(arr_holder[i].id, function(error, result2){
+          try{
+            console.log(result2.items[0].contentDetails.duration);
+          }
+          catch(error){
+            console.log(error + ", Probably not a video.");
+          }
+
+          if(i == arr_holder.length - 1){
+            resolve(arr_holder, page_num);
+          }
+          
+        });
+      }
+    }
+    else{ //no filter so leave it be
+      resolve(arr_holder, page_num);
+    }
+
   });
 };
 
