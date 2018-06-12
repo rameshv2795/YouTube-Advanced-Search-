@@ -34,6 +34,8 @@ app.post('/', function(req, res){
     return search_term_filter(req);
   }).then(function(){
     return send_request(req,res);
+  }).then(function(arr_holder, page_num){
+    return render_page(res, arr_holder, page_num);
   });
 
 });           
@@ -118,22 +120,26 @@ let send_request = function(req,res){
             result.items[i].snippet.title,
             result.items[i].snippet.thumbnails.medium.url,
             video_url);
-          console.log(result.items[i]);
+          //console.log(result.items[i]);
           arr_holder.push(video_class); //array of videos
         }
+        tube.getById(result.items[1].id.videoId, function(error, result2){
+          console.log(result2.items[0].contentDetails);
+        });
         page_token = result.nextPageToken;
       }
       localStorage.setItem('page_token', page_token);
 
-      res.render('index', {error: null, 
-        video_array: arr_holder,
-        page_num: page_num,
-        JSDOM: JSDOM}); 
+      resolve(arr_holder, page_num);  
     });
-
-    resolve(search_term);
   });
 };
 
-
-
+let render_page = function(res, arr_holder, page_num){
+  return new Promise(function(resolve,reject){
+    res.render('index', {error: null, 
+      video_array: arr_holder,
+      page_num: page_num}); 
+    resolve();
+  });
+};
