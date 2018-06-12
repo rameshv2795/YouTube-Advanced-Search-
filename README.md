@@ -2,16 +2,16 @@
 Advanced searches that cannot be done on the main YouTube site. Takes advantage of YouTube Data API. Uses Node.js and Express.js. Currently being developed.
 
 # Running
-1. Make sure Node.js v8.11.1 is installed (node -v)
+1. Make sure Node.js v8.11.1 is installed (node -v).
 2. Start the application with "node server.js".
-3. Open “http://localhost:3000” in browser
+3. Open “http://localhost:3000” in browser.
 
 # Status
-Search results display on multipled pages using page tokens. Date filter works (ex. 2/4/2014 - 5/3/2017).
+Search results display on multipled pages using page tokens. Date filter works (ex. 2/4/2014 - 5/3/2017). Working on specific time filter.
 
 # Future Plans
 2. Order by thumb up / down ratio
-3. Filter by specific time length (ex. < 7 min)
+3. Filter by specific time length (ex. < 7 min)   (WORKING ON)
 4. Search 3D videos
 5. Search by language
 
