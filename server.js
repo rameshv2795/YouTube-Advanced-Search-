@@ -38,6 +38,8 @@ app.post('/', function(req, res){
     return send_request(req,res, arr_holder);
   }).then(function(arr_holder, page_num){
     return length_filter(arr_holder, page_num);
+  }).then(function(arr_holder, page_num, e_holder){
+    return eliminate_results(arr_holder, page_num, e_holder);
   }).then(function(arr_holder, page_num){
     return render_page(res, arr_holder, page_num);
   });
@@ -141,28 +143,51 @@ let send_request = function(req, res, arr_holder){
 let length_filter = function(arr_holder, page_num){
   return new Promise(function(resolve,reject){
     let isLength = 1;
+    let high_filter = "PT2M22S"; //2 minutes, 22 seconds (test data)
+    let high_min = "2";
+    let high_sec = "22";
+    let e_holder = [];
 
     if(isLength == 1){ //modify arr_holder
       
-      for(let i = 0; i < arr_holder.length; i++){
+      let async_counter = 0;
+      let length_arr_holder = arr_holder.length;
 
-        tube.getById(arr_holder[i].id, function(error, result2){
+      for(let i = 0; i < length_arr_holder; i++){
+        
+        tube.getById(arr_holder[i].id, function(error, result2){ 
+          
           try{
             console.log(result2.items[0].contentDetails.duration);
+            let time_string = result2.items[0].contentDetails.duration;
+            let time_string_min = "", time_string_sec = "";
+            let isMin = 1;
+            if(high_filter.charAt()){
+              for(let v = 2; v < time_string.length - 1; v++){ 
+                if(isMin === 1){
+                  time_string_min = time_string_min + time_string.charAt(v);
+                  
+                }
+                else{
+
+                }
+              }
+            }
           }
           catch(error){
             console.log(error + ", Probably not a video.");
           }
-
-          if(i == arr_holder.length - 1){
-            resolve(arr_holder, page_num);
-          }
           
+          async_counter++;
+          console.log(async_counter);
+          if(async_counter == length_arr_holder-1){
+            resolve(arr_holder, page_num, e_holder);
+          }
         });
       }
     }
     else{ //no filter so leave it be
-      resolve(arr_holder, page_num);
+      resolve(arr_holder, page_num, e_holder);
     }
 
   });
@@ -174,5 +199,15 @@ let render_page = function(res, arr_holder, page_num){
       video_array: arr_holder,
       page_num: page_num}); 
     resolve();
+  });
+};
+
+let eliminate_results = function(arr_holder, page_num, e_holder){
+  return new Promise(function(resolve,reject){
+   // for(var i = 0; i < e_holder.length; i++){
+
+  //  }
+
+    resolve(arr_holder, page_num);
   });
 };
