@@ -30,17 +30,18 @@ app.post('/', function(req, res){
   let page_token, marker = 0, counter = 0; //Global vars in this scope. Might need to change
   let is_length_filter = 1;
   let arr_holder = [], arr_holder_searched = [];
+  let e_holder = [];
   console.log(req.body.lowtime);
 
   date_filter(req).then(function(){
     return search_term_filter(req);
   }).then(function(){
-    return send_request(req,res, arr_holder);
-  }).then(function(arr_holder, page_num){
-    return length_filter(arr_holder, page_num);
-  }).then(function(arr_holder, page_num, e_holder){
+    return send_request(req, res, arr_holder);
+  }).then(function(page_num){
+    return length_filter(arr_holder, page_num, e_holder);
+  }).then(function(page_num){
     return eliminate_results(arr_holder, page_num, e_holder);
-  }).then(function(arr_holder, page_num){
+  }).then(function(page_num){
     return render_page(res, arr_holder, page_num);
   });
 
@@ -134,20 +135,21 @@ let send_request = function(req, res, arr_holder){
       }
       localStorage.setItem('page_token', page_token);
 
-      resolve(arr_holder, page_num);  
+      resolve(page_num);  
     });
   });
 };
 
 /*Work in progress*/
-let length_filter = function(arr_holder, page_num){
+let length_filter = function(arr_holder, page_num, e_holder){
   return new Promise(function(resolve,reject){
     let isLength = 1;
     let high_filter = "PT2M22S"; //2 minutes, 22 seconds (test data)
     let high_min = "2";
     let high_sec = "22";
-    let e_holder = [];
-
+    //let e_holder = []; //holds video IDs that are filtered out (so can delete safely outside of async function)
+    e_holder.push(20);
+    e_holder.push(20);
     if(isLength == 1){ //modify arr_holder
       
       let async_counter = 0;
@@ -179,17 +181,29 @@ let length_filter = function(arr_holder, page_num){
           }
           
           async_counter++;
-          console.log(async_counter);
-          if(async_counter == length_arr_holder-1){
-            resolve(arr_holder, page_num, e_holder);
+          if(async_counter == length_arr_holder){
+            let e_size = e_holder.length;
+            console.log("Before: " + e_size);
+            resolve(page_num);
           }
         });
       }
     }
     else{ //no filter so leave it be
-      resolve(arr_holder, page_num, e_holder);
+      resolve(page_num);
     }
 
+  });
+};
+
+let eliminate_results = function(arr_holder, page_num, e_holder){
+  return new Promise(function(resolve,reject){
+    console.log("e_size: " + e_holder.length);
+    for(var i = 0; i < e_holder.length; i++){
+      
+    }
+
+    resolve(page_num);
   });
 };
 
@@ -199,15 +213,5 @@ let render_page = function(res, arr_holder, page_num){
       video_array: arr_holder,
       page_num: page_num}); 
     resolve();
-  });
-};
-
-let eliminate_results = function(arr_holder, page_num, e_holder){
-  return new Promise(function(resolve,reject){
-   // for(var i = 0; i < e_holder.length; i++){
-
-  //  }
-
-    resolve(arr_holder, page_num);
   });
 };
