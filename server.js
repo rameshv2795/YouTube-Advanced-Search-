@@ -42,7 +42,12 @@ app.post('/', function(req, res){
   }).then(function(page_num){
     return eliminate_results(arr_holder, page_num, e_holder);
   }).then(function(page_num){
-    return render_page(res, arr_holder, page_num);
+    if(is_length_filter == 1){
+      return render_page(res, arr_holder, page_num); //render length filtered results
+    }
+    else{
+      return render_page(res, arr_holder, page_num); //render normal 
+    }
   });
 
 });           
@@ -147,9 +152,7 @@ let length_filter = function(arr_holder, page_num, e_holder){
     let high_filter = "PT2M22S"; //2 minutes, 22 seconds (test data)
     let high_min = "2";
     let high_sec = "22";
-    //let e_holder = []; //holds video IDs that are filtered out (so can delete safely outside of async function)
-    e_holder.push(20);
-    e_holder.push(20);
+
     if(isLength == 1){ //modify arr_holder
       
       let async_counter = 0;
@@ -158,23 +161,25 @@ let length_filter = function(arr_holder, page_num, e_holder){
       for(let i = 0; i < length_arr_holder; i++){
         
         tube.getById(arr_holder[i].id, function(error, result2){ 
-          
+
           try{
             console.log(result2.items[0].contentDetails.duration);
             let time_string = result2.items[0].contentDetails.duration;
             let time_string_min = "", time_string_sec = "";
-            let isMin = 1;
-            if(high_filter.charAt()){
-              for(let v = 2; v < time_string.length - 1; v++){ 
-                if(isMin === 1){
-                  time_string_min = time_string_min + time_string.charAt(v);
-                  
-                }
-                else{
+            let isMin = 0;
+            for(let v = 2; v < time_string.length - 1; v++){ 
 
+              if(time_string.charAt(v) === "M"){
+
+                if(time_string_min <= high_min){
+                  e_holder.push(arr_holder[i]);
                 }
+                break;
               }
+                time_string_min = time_string_min + time_string.charAt(v);
+
             }
+            
           }
           catch(error){
             console.log(error + ", Probably not a video.");
@@ -183,7 +188,7 @@ let length_filter = function(arr_holder, page_num, e_holder){
           async_counter++;
           if(async_counter == length_arr_holder){
             let e_size = e_holder.length;
-            console.log("Before: " + e_size);
+           // console.log("Before: " + e_size);
             resolve(page_num);
           }
         });
@@ -200,7 +205,7 @@ let eliminate_results = function(arr_holder, page_num, e_holder){
   return new Promise(function(resolve,reject){
     console.log("e_size: " + e_holder.length);
     for(var i = 0; i < e_holder.length; i++){
-      
+      console.log(e_holder[i].id);
     }
 
     resolve(page_num);
