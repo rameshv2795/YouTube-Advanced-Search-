@@ -28,7 +28,7 @@ app.get('/', function (req, res){
 app.post('/', function(req, res){
   let search_term = "";
   let page_token, marker = 0, counter = 0; //Global vars in this scope. Might need to change
-  let is_length_filter = 1;
+  let is_length_filter = 1, length_done = [1];
   let arr_holder = [], arr_holder_searched = [];
   let e_holder = [];
   console.log(req.body.lowtime);
@@ -38,9 +38,17 @@ app.post('/', function(req, res){
   }).then(function(){
     return send_request(req, res, arr_holder);
   }).then(function(page_num){
-    return length_filter(arr_holder, page_num, e_holder);
+    return length_filter(arr_holder, page_num, e_holder, length_done);
   }).then(function(page_num){
-    return eliminate_results(arr_holder, page_num, e_holder);
+    if(length_done[0] === 0){ //get more videos
+      console.log("LENGTH FILTER: " + length_done[0]);
+      arr_holder = [];
+      return send_request(req, res, arr_holder);
+    }
+    else{
+      console.log("BOOL: " + length_done[0]);
+      return eliminate_results(arr_holder, page_num, e_holder);
+    }
   }).then(function(page_num){
     if(is_length_filter == 1){
       return render_page(res, arr_holder, page_num); //render length filtered results
@@ -146,7 +154,7 @@ let send_request = function(req, res, arr_holder){
 };
 
 /*Work in progress*/
-let length_filter = function(arr_holder, page_num, e_holder){
+let length_filter = function(arr_holder, page_num, e_holder, length_done){
   return new Promise(function(resolve,reject){
     let isLength = 1;
     let high_filter = "PT2M22S"; //2 minutes, 22 seconds (test data)
@@ -171,7 +179,7 @@ let length_filter = function(arr_holder, page_num, e_holder){
 
               if(time_string.charAt(v) === "M"){
 
-                if(time_string_min <= high_min){
+                if(time_string_min <= high_min && e_holder.length < 9){
                   e_holder.push(arr_holder[i]);
                 }
                 break;
@@ -188,13 +196,22 @@ let length_filter = function(arr_holder, page_num, e_holder){
           async_counter++;
           if(async_counter == length_arr_holder){
             let e_size = e_holder.length;
-           // console.log("Before: " + e_size);
-            resolve(page_num);
+           console.log("Before: " + e_size);
+            if(e_size < 9){
+              console.log("FINAL: " + e_size);
+              length_done[0] = 0;
+              resolve(page_num); 
+            }
+            else{
+              length_done[0] = 1;
+              resolve(page_num);
+            }
           }
         });
       }
     }
     else{ //no filter so leave it be
+      length_done[0] = 1;
       resolve(page_num);
     }
 
@@ -212,10 +229,11 @@ let eliminate_results = function(arr_holder, page_num, e_holder){
   });
 };
 
-let render_page = function(res, arr_holder, page_num){
+let render_page = function(res, holder, page_num){
   return new Promise(function(resolve,reject){
+    console.log("HOLDER:" + holder.length);
     res.render('index', {error: null, 
-      video_array: arr_holder,
+      video_array: holder,
       page_num: page_num}); 
     resolve();
   });
