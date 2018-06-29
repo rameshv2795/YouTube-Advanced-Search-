@@ -28,7 +28,7 @@ app.get('/', function (req, res){
 app.post('/', function(req, res){
   let search_term = "";
   let page_token, marker = 0, counter = 0; //Global vars in this scope. Might need to change
-  let is_length_filter = 1, length_done = [1];
+  let is_length_filter = 1, length_done = [0];
   let arr_holder = [], arr_holder_searched = [];
   let e_holder = [];
   console.log(req.body.lowtime);
@@ -38,19 +38,13 @@ app.post('/', function(req, res){
   }).then(function(){
     return send_request(req, res, arr_holder);
   }).then(function(page_num){
-    return length_filter(arr_holder, page_num, e_holder, length_done);
+    return length_filter(req, res, arr_holder, page_num, e_holder, length_done);
   }).then(function(page_num){
-    if(length_done[0] === 0){ //get more videos
-      console.log("LENGTH FILTER: " + length_done[0]);
-      arr_holder = [];
-      return send_request(req, res, arr_holder);
-    }
-    else{
-      console.log("BOOL: " + length_done[0]);
-      return eliminate_results(arr_holder, page_num, e_holder);
-    }
+    console.log("BOOL: " + length_done[0]);
+    return eliminate_results(arr_holder, page_num, e_holder);
   }).then(function(page_num){
     if(is_length_filter == 1){
+      console.log("BOOL: " + length_done[0]);
       return render_page(res, arr_holder, page_num); //render length filtered results
     }
     else{
@@ -154,7 +148,7 @@ let send_request = function(req, res, arr_holder){
 };
 
 /*Work in progress*/
-let length_filter = function(arr_holder, page_num, e_holder, length_done){
+let length_filter = function(req, res, arr_holder, page_num, e_holder, length_done){
   return new Promise(function(resolve,reject){
     let isLength = 1;
     let high_filter = "PT2M22S"; //2 minutes, 22 seconds (test data)
@@ -166,49 +160,54 @@ let length_filter = function(arr_holder, page_num, e_holder, length_done){
       let async_counter = 0;
       let length_arr_holder = arr_holder.length;
 
-      for(let i = 0; i < length_arr_holder; i++){
-        
-        tube.getById(arr_holder[i].id, function(error, result2){ 
+      let filter_done = 0;
+      while(filter_done == 0){
+        filter_done = 1;
+        for(let i = 0; i < length_arr_holder; i++){
+          
+          tube.getById(arr_holder[i].id, function(error, result2){ 
 
-          try{
-            console.log(result2.items[0].contentDetails.duration);
-            let time_string = result2.items[0].contentDetails.duration;
-            let time_string_min = "", time_string_sec = "";
-            let isMin = 0;
-            for(let v = 2; v < time_string.length - 1; v++){ 
+            try{
+              console.log(result2.items[0].contentDetails.duration);
+              let time_string = result2.items[0].contentDetails.duration;
+              let time_string_min = "", time_string_sec = "";
+              let isMin = 0;
+              for(let v = 2; v < time_string.length - 1; v++){ 
 
-              if(time_string.charAt(v) === "M"){
+                if(time_string.charAt(v) === "M"){
 
-                if(time_string_min <= high_min && e_holder.length < 9){
-                  e_holder.push(arr_holder[i]);
+                  if(time_string_min <= high_min && e_holder.length < 9){
+                    e_holder.push(arr_holder[i]);
+                  }
+                  break;
                 }
-                break;
-              }
-                time_string_min = time_string_min + time_string.charAt(v);
+                  time_string_min = time_string_min + time_string.charAt(v);
 
+              }
+              
+            }
+            catch(error){
+              console.log(error + ", Probably not a video.");
             }
             
-          }
-          catch(error){
-            console.log(error + ", Probably not a video.");
-          }
-          
-          async_counter++;
-          if(async_counter == length_arr_holder){
-            let e_size = e_holder.length;
-           console.log("Before: " + e_size);
-            if(e_size < 9){
-              console.log("FINAL: " + e_size);
-              length_done[0] = 0;
-              resolve(page_num); 
+            async_counter++;
+            if(async_counter == length_arr_holder){
+              let e_size = e_holder.length;
+            console.log("Before: " + e_size);
+              if(e_size < 9){
+                console.log("FINAL: " + e_size);
+                length_done[0] = 0;
+                resolve(page_num); 
+              }
+              else{
+                console.log("DONE ESIZE: " + e_size );
+                length_done[0] = 1;
+                resolve(page_num);
+              }
             }
-            else{
-              length_done[0] = 1;
-              resolve(page_num);
-            }
-          }
-        });
-      }
+          });
+        }
+      }  
     }
     else{ //no filter so leave it be
       length_done[0] = 1;
