@@ -33,7 +33,7 @@ app.post('/', function(req, res){
   let e_holder = [];
   console.log(req.body.lowtime);
 
-  date_filter(req).then(function(){
+  set_filters(req).then(function(){
     return search_term_filter(req);
   }).then(function(){
     return send_request(req, res, arr_holder);
@@ -58,11 +58,13 @@ app.listen(3000, function(){
   console.log('Example app listening on port 3000!')
 });
 
-/*Promises for setting api date parameter*/
-let date_filter = function(req){
+/*Promises for setting search filters*/
+let set_filters = function(req){
   return new Promise(function(resolve,reject){
     let low_date = "2000-05-10T19:00:03.000Z", high_date = "2900-05-10T19:00:03.000Z";
-
+    let low_time = "0", high_time = "999999";
+    
+    /*Date filter information*/
     if(localStorage.getItem('low_date') === null){ //no local storage set yet
       localStorage.setItem('low_date', low_date);
       localStorage.setItem('high_date', high_date);
@@ -73,7 +75,6 @@ let date_filter = function(req){
     if(req.body.highdate === ""){ //higher date filter empty
       localStorage.setItem('high_date', high_date); //set default 
     }
-    /*Date filter information*/
     if(req.body.lowdate !== "" && req.body.lowdate !== undefined){
       low_date = new Date(req.body.lowdate);
       low_date = low_date.toISOString();
@@ -84,6 +85,28 @@ let date_filter = function(req){
       high_date = high_date.toISOString();
       localStorage.setItem('high_date', high_date);
     }
+
+    /*Time filter information*/
+    if(localStorage.getItem('low_time') === null || localStorage.getItem('high_time') === null){ //no local storage set yet
+      localStorage.setItem('low_time', low_time);
+      localStorage.setItem('high_time', high_time);
+    }
+    if(req.body.lowtime === ""){ //low date filter empty
+      localStorage.setItem('low_time', low_time); //set default 
+    }
+    if(req.body.hightime === ""){ //higher date filter empty
+      localStorage.setItem('high_time', high_time); //set default 
+    }
+    if(req.body.lowtime !== "" && req.body.lowtime !== undefined){
+      //low_time = new Date(req.body.lowtime);
+      low_time = req.body.lowtime;
+      localStorage.setItem('low_time', low_time);
+    }
+    if(req.body.highdate !== "" && req.body.highdate !== undefined){
+      //high_time = new Date(req.body.highdate);    
+      high_time = req.body.hightime;
+      localStorage.setItem('high_time', high_time);
+    }    
 
     resolve();
   });
@@ -161,8 +184,8 @@ let length_filter = function(req, res, arr_holder, page_num, e_holder, length_do
       let length_arr_holder = arr_holder.length;
 
       let filter_done = 0;
-      while(filter_done == 0){
-        filter_done = 1;
+      while(filter_done == 0){  
+        filter_done = 1; //debugger
         for(let i = 0; i < length_arr_holder; i++){
           
           tube.getById(arr_holder[i].id, function(error, result2){ 
@@ -197,11 +220,16 @@ let length_filter = function(req, res, arr_holder, page_num, e_holder, length_do
               if(e_size < 9){
                 console.log("FINAL: " + e_size);
                 length_done[0] = 0;
-                resolve(page_num); 
+                //arr_holder = [];
+                //send_request(req, res, arr_holder); 
+               // return send_request(req, res, arr_holder);
+                resolve(page_num);
+
               }
               else{
-                console.log("DONE ESIZE: " + e_size );
+                console.log("DONE ESIZE: " + e_size);
                 length_done[0] = 1;
+                filter_done = 1;
                 resolve(page_num);
               }
             }
