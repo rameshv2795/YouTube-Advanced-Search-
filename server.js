@@ -43,14 +43,9 @@ app.post('/', function(req, res){
     console.log("BOOL: " + length_done[0]);
     return eliminate_results(arr_holder, page_num, e_holder);
   }).then(function(page_num){
-    if(is_length_filter == 1){
       console.log("BOOL: " + length_done[0]);
-      return render_page(res, arr_holder, page_num); //render length filtered results
-    }
-    else{
-      return render_page(res, arr_holder, page_num); //render normal 
-    }
-  });
+      return render_page(res, arr_holder, page_num); //render search
+ });
 
 });           
 
