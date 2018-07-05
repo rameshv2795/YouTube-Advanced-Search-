@@ -133,7 +133,7 @@ let send_request = function(req, res, arr_holder){
       publishedAfter: localStorage.getItem('low_date'), 
       pageToken: localStorage.getItem('page_token')
     };
-
+    console.log("LOW TIME: " + localStorage.getItem('low_time'));
     tube.search(search_term, search_number, parameters, function(error, result, body){
       let is_error = 0;
       

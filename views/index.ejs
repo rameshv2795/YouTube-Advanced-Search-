@@ -103,7 +103,13 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           }
           if(window.localStorage.getItem("high") !== undefined){
             $("#hdate_id").val(window.localStorage.getItem("high"));
-          }          
+          } 
+          if(window.localStorage.getItem("lowtime") !== undefined){
+            $("#ltime_id").val(window.localStorage.getItem("lowtime"));
+          }
+          if(window.localStorage.getItem("hightime") !== undefined){
+            $("#htime_id").val(window.localStorage.getItem("hightime"));
+          }                    
         </script>
           <% if(locals.video_array !== undefined) {%> <!-- Makes sure there is a search term -->                     
               <% var page_loop = 9; %>
