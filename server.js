@@ -1,7 +1,5 @@
 const express = require('express');
 const app = express();
-const jsdom = require('jsdom');
-const {JSDOM} = jsdom;
 const Video = require('./video.js'); //include video.js class
 const bodyParser = require('body-parser');
 const request = require('request');
@@ -28,24 +26,33 @@ app.get('/', function (req, res){
 app.post('/', function(req, res){
   let search_term = "";
   let page_token, marker = 0, counter = 0; //Global vars in this scope. Might need to change
-  let is_length_filter = 1, length_done = [0];
+  let length_done = [0];
   let arr_holder = [], arr_holder_searched = [];
   let e_holder = [];
   console.log(req.body.lowtime);
 
-  set_filters(req).then(function(){
-    return search_term_filter(req);
-  }).then(function(){
-    return send_request(req, res, arr_holder);
-  }).then(function(page_num){
-    return length_filter(req, res, arr_holder, page_num, e_holder, length_done);
-  }).then(function(page_num){
-    console.log("BOOL: " + length_done[0]);
-    return eliminate_results(arr_holder, page_num, e_holder);
-  }).then(function(page_num){
+  let is_length_filter = 0, in_promise = 0;
+    is_length_filter = 1;
+    //console.log("HERE: "+ in_promise);
+
+    set_filters(req).then(function(){ 
+      return search_term_filter(req);
+    }).then(function(){
+      return send_request(req, res, arr_holder);
+    }).then(function(page_num){
+      return length_filter(req, res, arr_holder, page_num, e_holder, length_done);
+    }).then(function(page_num){
       console.log("BOOL: " + length_done[0]);
-      return render_page(res, arr_holder, page_num); //render search
- });
+      return eliminate_results(arr_holder, page_num, e_holder);
+    }).then(function(page_num){
+        if(e_holder.length == 9){
+          is_length_filter = 0;
+          return render_page(res, arr_holder, page_num); //render search
+        }
+        is_length_filter = 1;
+        return render_page(res, arr_holder, page_num);
+
+  });
 
 });           
 
@@ -170,7 +177,8 @@ let length_filter = function(req, res, arr_holder, page_num, e_holder, length_do
   return new Promise(function(resolve,reject){
     let isLength = 1;
     let high_filter = "PT2M22S"; //2 minutes, 22 seconds (test data)
-    let high_min = "2";
+    let high_min = localStorage.getItem('high_time');
+    console.log("high_min: " + high_min);
     let high_sec = "22";
 
     if(isLength == 1){ //modify arr_holder
