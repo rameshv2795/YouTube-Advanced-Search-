@@ -61,6 +61,16 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
     <input type="number" min="0" step="1" name="htime" id="htime_id"><br><br>
   </form> 
 
+  <form class="w3-bar-item w3-button w3-hover-grey">
+    Type<br>
+    <select name="ttype" id="ttype_id">
+      <option>all</option>
+      <option>video</option>
+      <option>channel</option>      
+      <option>playlist</option>          
+    </select>
+  </form> 
+
   <a class="w3-bar-item w3-button w3-hover-grey" href="#">Filter 2</a>
   <a class="w3-bar-item w3-button w3-hover-grey" href="#">Filter 3</a>
   <a class="w3-bar-item w3-button w3-hover-grey" href="#">Filter 4</a>
@@ -84,6 +94,8 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           <input type = "hidden" id = "highdate_id" name ="highdate" >
           <input type = "hidden" id = "lowtime_id" name ="lowtime" >
           <input type = "hidden" id = "hightime_id" name ="hightime" >
+          <input type = "hidden" id = "hightime_id" name ="hightime" >
+          <input type = "hidden" id = "type_id" name ="type" >
           <input type="submit"  value="Search">
         </form>
 
@@ -109,7 +121,10 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           }
           if(window.localStorage.getItem("hightime") !== undefined){
             $("#htime_id").val(window.localStorage.getItem("hightime"));
-          }                    
+          }        
+          if(window.localStorage.getItem("type") !== undefined){
+            $("#ttype_id").val(window.localStorage.getItem("type"));
+          }                        
         </script>
           <% if(locals.video_array !== undefined) {%> <!-- Makes sure there is a search term -->                     
               <% var page_loop = 9; %>
@@ -164,8 +179,9 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
         <input type = "hidden" name ="highdate_page" value=">>">      
         <input type = "hidden" name ="lowtime_page" value=">>">
         <input type = "hidden" name ="hightime_page" value=">>">   
+        <input type = "hidden" name ="type_page" value=">>">
       </form>
-      <button type="submit" class="w3-button w3-black" form="formid" value=">>"><<</button>
+      <button type="submit" class="w3-button w3-black" form="formid" value=">"><<</button>
       <button type="submit" class="w3-button w3-black" form="formid" value=">>">>></button>
 
     </div>
@@ -220,6 +236,8 @@ function keep_search(){ //on new search submit
   $("#hightime_id").val($("#htime_id").val());
   window.localStorage.setItem("lowtime",$('#lowtime_id').val());
   window.localStorage.setItem("hightime",$('#hightime_id').val());
+  $("#type_id").val($("#ttype_id").val());
+  window.localStorage.setItem("type",$('#type_id').val());
 }
 
 function save_search(){ //on next page button push

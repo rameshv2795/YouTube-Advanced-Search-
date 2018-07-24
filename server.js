@@ -51,7 +51,6 @@ app.post('/', function(req, res){
         }
         is_length_filter = 1;
         return render_page(res, arr_holder, page_num);
-
   });
 
 });           
@@ -65,6 +64,7 @@ let set_filters = function(req){
   return new Promise(function(resolve,reject){
     let low_date = "2000-05-10T19:00:03.000Z", high_date = "2900-05-10T19:00:03.000Z";
     let low_time = "0", high_time = "999999";
+    let type_v = "";
     
     /*Date filter information*/
     if(localStorage.getItem('low_date') === null){ //no local storage set yet
@@ -110,6 +110,19 @@ let set_filters = function(req){
       localStorage.setItem('high_time', high_time);
     }    
 
+    /*Type information*/
+    if(localStorage.getItem('type') === null){ //no local storage set yet
+      localStorage.setItem('type', type_v);
+    }    
+    if(req.body.type === ""){ //low date filter empty
+      localStorage.setItem('type', type_v); //set default 
+    }
+    if(req.body.type !== "" && req.body.type !== undefined){
+      type_v = req.body.type;
+      //type_v = type_v.toISOString();
+      localStorage.setItem('type', type_v);
+    }    
+
     resolve();
   });
 };
@@ -138,9 +151,10 @@ let send_request = function(req, res, arr_holder){
     let parameters = { 
       publishedBefore: localStorage.getItem('high_date'), 
       publishedAfter: localStorage.getItem('low_date'), 
-      pageToken: localStorage.getItem('page_token')
+      pageToken: localStorage.getItem('page_token'),
+      type: localStorage.getItem('type')
     };
-    console.log("LOW TIME: " + localStorage.getItem('low_time'));
+    console.log("Type: " + localStorage.getItem('type'));
     tube.search(search_term, search_number, parameters, function(error, result, body){
       let is_error = 0;
       
