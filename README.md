@@ -16,4 +16,5 @@ Search results display on multipled pages using page tokens. Date filter works (
 5. Search by language
 
 # Screens
-![alt text](screen.png "Website view")
+![alt text](screen2.png "Website view top")
+![alt text](screen3.png "Website view bottom")
