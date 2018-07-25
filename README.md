@@ -3,8 +3,12 @@ Advanced searches that cannot be done on the main YouTube site. Takes advantage 
 
 # Running
 1. Make sure Node.js v8.11.1 is installed (node -v).
-2. Start the application with "node server.js".
-3. Open “http://localhost:3000” in browser.
+2. Install packages
+  - "npm install express --save"
+  - "npm install body-parser"
+  - youtube-node
+3. Start the application with "node server.js".
+4. Open “http://localhost:3000” in browser.
 
 # Status
 Search results display on multipled pages using page tokens. Date filter works (ex. 2/4/2014 - 5/3/2017). Working on specific time filter.
