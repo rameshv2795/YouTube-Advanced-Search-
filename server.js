@@ -167,7 +167,8 @@ let send_request = function(req, res, arr_holder){
         is_error = 0;
   
         for(let i = 0; i < search_number; i++){ 
-          let video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
+          
+          let video_url = "https://www.youtube.com/watch?v=" + "result.items[i].id.videoId";
           let video_class = new Video(
             result.items[i].snippet.title,
             result.items[i].snippet.thumbnails.medium.url,
@@ -178,6 +179,7 @@ let send_request = function(req, res, arr_holder){
           arr_holder.push(video_class); //array of videos
         }
         page_token = result.nextPageToken;
+        console.log("RESULT Playlist: "+ page_token);
       }
       localStorage.setItem('page_token', page_token);
 
@@ -195,7 +197,7 @@ let length_filter = function(req, res, arr_holder, page_num, e_holder, length_do
     console.log("high_min: " + high_min);
     let high_sec = "22";
 
-    if(isLength == 1){ //modify arr_holder
+    if(isLength == 1 && req.body.type === ""){ //modify arr_holder
       
       let async_counter = 0;
       let length_arr_holder = arr_holder.length;
