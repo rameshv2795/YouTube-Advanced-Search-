@@ -166,9 +166,9 @@ let send_request = function(req, res, arr_holder){
         let string_result = "";
         is_error = 0;
   
-        for(let i = 0; i < search_number; i++){ 
+        for(let i = 0; i < search_number && result.items[i] != undefined; i++){ 
           
-          let video_url = "https://www.youtube.com/watch?v=" + "result.items[i].id.videoId";
+          let video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
           let video_class = new Video(
             result.items[i].snippet.title,
             result.items[i].snippet.thumbnails.medium.url,
