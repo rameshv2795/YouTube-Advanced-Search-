@@ -11,7 +11,7 @@ Advanced searches that cannot be done on the main YouTube site. Takes advantage 
 4. Open “http://localhost:3000” in browser.
 
 # Status
-Search results display on multipled pages using page tokens. Date filter works (ex. 2/4/2014 - 5/3/2017). Working on specific time filter.
+Search results display on multipled pages using page tokens. Searching, date filter (ex. 2/4/2014 - 5/3/2017), and type filter works. Working on specific time filter.
 
 # Future Plans
 2. Order by thumb up / down ratio
