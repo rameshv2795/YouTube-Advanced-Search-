@@ -169,11 +169,14 @@ let send_request = function(req, res, arr_holder){
         for(let i = 0; i < search_number && result.items[i] != undefined; i++){ 
           console.log(result.items[i].id.kind);
           let video_url; 
-          if(localStorage.getItem('type') === 'video'){
+          if(result.items[i].id.kind === 'youtube#video'){
             video_url = "https://www.youtube.com/watch?v=" + result.items[i].id.videoId;
           }
-          else if(localStorage.getItem('type') === 'playlist'){
+          else if(result.items[i].id.kind === 'youtube#playlist'){
             video_url = "https://www.youtube.com/playlist?list=" + result.items[i].id.playlistId;
+          }
+          else if(result.items[i].id.kind === "youtube#channel"){
+            video_url = "https://www.youtube.com/channel/" + result.items[i].id.channelId;
           }
           let video_class = new Video(
             result.items[i].snippet.title,
