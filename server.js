@@ -100,12 +100,10 @@ let set_filters = function(req){
       localStorage.setItem('high_time', high_time); //set default 
     }
     if(req.body.lowtime !== "" && req.body.lowtime !== undefined){
-      //low_time = new Date(req.body.lowtime);
       low_time = req.body.lowtime;
       localStorage.setItem('low_time', low_time);
     }
-    if(req.body.highdate !== "" && req.body.highdate !== undefined){
-      //high_time = new Date(req.body.highdate);    
+    if(req.body.highdate !== "" && req.body.highdate !== undefined){   
       high_time = req.body.hightime;
       localStorage.setItem('high_time', high_time);
     }    
@@ -184,7 +182,6 @@ let send_request = function(req, res, arr_holder){
             video_url,
             result.items[i].id.videoId
           );
-          //console.log(result.items[i]);
           arr_holder.push(video_class); //array of videos
         }
         page_token = result.nextPageToken;
@@ -248,11 +245,7 @@ let length_filter = function(req, res, arr_holder, page_num, e_holder, length_do
               if(e_size < 9){
                 console.log("FINAL: " + e_size);
                 length_done[0] = 0;
-                //arr_holder = [];
-                //send_request(req, res, arr_holder); 
-               // return send_request(req, res, arr_holder);
                 resolve(page_num);
-
               }
               else{
                 console.log("DONE ESIZE: " + e_size);
@@ -269,7 +262,6 @@ let length_filter = function(req, res, arr_holder, page_num, e_holder, length_do
       length_done[0] = 1;
       resolve(page_num);
     }
-
   });
 };
 
@@ -279,7 +271,6 @@ let eliminate_results = function(arr_holder, page_num, e_holder){
     for(var i = 0; i < e_holder.length; i++){
       console.log(e_holder[i].id);
     }
-
     resolve(page_num);
   });
 };
