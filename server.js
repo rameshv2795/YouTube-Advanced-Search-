@@ -30,6 +30,8 @@ app.post('/', function(req, res){
   let arr_holder = [], arr_holder_searched = [];
   let e_holder = [];
   console.log(req.body.lowtime);
+  console.log("channelid: ");
+  console.log(req.body.channelid);
 
   let is_length_filter = 0, in_promise = 0;
     is_length_filter = 1;
@@ -65,6 +67,7 @@ let set_filters = function(req){
     let low_date = "2000-05-10T19:00:03.000Z", high_date = "2900-05-10T19:00:03.000Z";
     let low_time = "0", high_time = "999999";
     let type_v = "";
+    let channel_id = "";
     
     /*Date filter information*/
     if(localStorage.getItem('low_date') === null){ //no local storage set yet
@@ -106,7 +109,19 @@ let set_filters = function(req){
     if(req.body.highdate !== "" && req.body.highdate !== undefined){   
       high_time = req.body.hightime;
       localStorage.setItem('high_time', high_time);
-    }    
+    }   
+
+    /*ChannelId*/
+    if(localStorage.getItem('channel_id') === null){ //no local storage set yet
+      localStorage.setItem('channel_id', channel_id);
+    }
+    if(req.body.channelid === ""){ //low date filter empty
+      localStorage.setItem('channel_id', channel_id); //set default 
+    }
+    if(req.body.channelid !== "" && req.body.channelid !== undefined){
+      channel_id = req.body.channelid;
+      localStorage.setItem('channel_id', channel_id);
+    }
 
     /*Type information*/
     if(localStorage.getItem('type') === null){ //no local storage set yet
@@ -145,14 +160,17 @@ let search_term_filter = function(req){
 
 let send_request = function(req, res, arr_holder){
   return new Promise(function(resolve,reject){
-    let search_number = 9; //amount of videos to be pulled  
+    let search_number = 50; //amount of videos to be pulled  
     let parameters = { 
       publishedBefore: localStorage.getItem('high_date'), 
       publishedAfter: localStorage.getItem('low_date'), 
+      channelId: localStorage.getItem('channel_id'), 
       pageToken: localStorage.getItem('page_token'),
-      type: localStorage.getItem('type')
+      type: localStorage.getItem('type'),
+      order: 'date'
     };
     console.log("Type: " + localStorage.getItem('type'));
+    console.log("ChannelId Param: " + localStorage.getItem('channel_id'));
     tube.search(search_term, search_number, parameters, function(error, result, body){
       let is_error = 0;
       
@@ -187,8 +205,13 @@ let send_request = function(req, res, arr_holder){
         page_token = result.nextPageToken;
         console.log("RESULT Playlist: "+ page_token);
       }
-      localStorage.setItem('page_token', page_token);
 
+      if (page_token !== "" && page_token !== undefined){
+        console.log(result);
+
+        localStorage.setItem('page_token', page_token);
+      }
+      
       resolve(page_num);  
     });
   });

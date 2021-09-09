@@ -62,6 +62,11 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
   </form> 
 
   <form class="w3-bar-item w3-button w3-hover-grey">
+    Channel Id<br>
+    <input type="text" name="cid" id="cid_id"><br>
+  </form> 
+
+  <form class="w3-bar-item w3-button w3-hover-grey">
     Type<br>
     <select name="ttype" id="ttype_id">
       <option>all</option>
@@ -94,7 +99,7 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           <input type = "hidden" id = "highdate_id" name ="highdate" >
           <input type = "hidden" id = "lowtime_id" name ="lowtime" >
           <input type = "hidden" id = "hightime_id" name ="hightime" >
-          <input type = "hidden" id = "hightime_id" name ="hightime" >
+          <input type = "hidden" id = "channelid_id" name ="channelid" >
           <input type = "hidden" id = "type_id" name ="type" >
           <input type="submit"  value="Search">
         </form>
@@ -121,6 +126,9 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
           }
           if(window.localStorage.getItem("hightime") !== undefined){
             $("#htime_id").val(window.localStorage.getItem("hightime"));
+          }    
+          if(window.localStorage.getItem("channelid") !== undefined){
+            $("#cid_id").val(window.localStorage.getItem("channelid"));
           }        
           if(window.localStorage.getItem("type") !== undefined){
             $("#ttype_id").val(window.localStorage.getItem("type"));
@@ -179,6 +187,7 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif;}
         <input type = "hidden" name ="highdate_page" value=">>">      
         <input type = "hidden" name ="lowtime_page" value=">>">
         <input type = "hidden" name ="hightime_page" value=">>">   
+        <input type = "hidden" name ="channelid_page" value=">>">   
         <input type = "hidden" name ="type_page" value=">>">
       </form>
       <button type="submit" class="w3-button w3-black" onclick="goBack()" value=">"><<</button>
@@ -238,6 +247,9 @@ function keep_search(){ //on new search submit
   window.localStorage.setItem("hightime",$('#hightime_id').val());
   $("#type_id").val($("#ttype_id").val());
   window.localStorage.setItem("type",$('#type_id').val());
+
+  $("#channelid_id").val($("#cid_id").val()); //moves channelid filter input to hidden input field for submission
+  window.localStorage.setItem("channelid",$('#channelid_id').val());
 }
 
 function save_search(){ //on next page button push
@@ -246,6 +258,8 @@ function save_search(){ //on next page button push
   $("#hdate_id").val(window.localStorage.getItem("high"));
   $("#ltime_id").val(window.localStorage.getItem("lowtime"));
   $("#htime_id").val(window.localStorage.getItem("hightime"));
+  $("#cid_id").val(window.localStorage.getItem("channelid"));
+
 }
 
 function goBack(){
